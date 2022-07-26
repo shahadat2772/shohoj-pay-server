@@ -3,7 +3,6 @@ const port = process.env.PORT || 5000;
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 // MiddleWere
 app.use(express.json());
