@@ -3,6 +3,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 // MiddleWere
 app.use(express.json());
@@ -19,8 +20,13 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+const servicesRoutes = require("./routes/services.route");
+
 async function run() {
-  console.log("HELLO");
+  // Collections
+
+  app.use(servicesRoutes);
+
   try {
     await client.connect();
   } finally {
