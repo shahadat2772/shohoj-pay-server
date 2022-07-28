@@ -22,3 +22,10 @@ exports.createAccount = async (req, res) => {
 
   res.send(userResult, balanceResult, savingResult);
 };
+
+exports.getUserInfo = async (req, res) => {
+  const email = req.headers.email;
+  const filter = { email: email };
+  const userInfo = await userCollection.findOne(filter);
+  res.send(userInfo);
+};
