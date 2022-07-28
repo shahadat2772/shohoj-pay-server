@@ -1,7 +1,7 @@
 const balanceCollection = require("../models/balances.model");
 const transactionCollection = require("../models/transactions.model");
-
 const stripe = require("stripe")(process.env.STRIPE_KEY);
+const date = new Date().toLocaleDateString();
 
 // Payment intent function
 exports.getPaymentIntent = async (req, res) => {
@@ -17,15 +17,11 @@ exports.getPaymentIntent = async (req, res) => {
 
 // ADD MONEY
 exports.addMoney = async (req, res) => {
-  const date = new Date().toLocaleDateString();
-
   const { addMoneyInfo } = req.body;
-  console.log(addMoneyInfo);
-  const addMoneyAmount = addMoneyInfo?.amount;
   const email = addMoneyInfo?.email;
+  const addMoneyAmount = addMoneyInfo?.amount;
   const filter = { email };
   const usersBalanceInfo = await balanceCollection.findOne(filter);
-  console.log(usersBalanceInfo);
   const lastBalance = usersBalanceInfo?.balance;
   const newBalance = parseInt(lastBalance) + parseInt(addMoneyAmount);
   const doc = {
@@ -34,20 +30,24 @@ exports.addMoney = async (req, res) => {
     },
   };
   const balanceUpdateResult = await balanceCollection.updateOne(filter, doc);
-  console.log(balanceUpdateResult);
-  const statement = {
-    email: email,
-    type: "addMoney",
-    amount: addMoneyAmount,
-    date: date,
-  };
-  const stateMentResult = await transactionCollection.insertOne(statement);
-  console.log(stateMentResult);
-  res.send(balanceUpdateResult, stateMentResult);
+
+  if (balanceUpdateResult?.modifiedCount > 0) {
+    const statement = {
+      email: email,
+      type: "addMoney",
+      amount: addMoneyAmount,
+      date: date,
+    };
+    const stateMentResult = await transactionCollection.insertOne(statement);
+    res.send([balanceUpdateResult, stateMentResult]);
+  }
 };
 
 // Send Money
 exports.sendMoney = (req, res) => {
   const { sandMoneyInfo } = req.body;
-  console.log(sandMoneyInfo);
+
+  const senders = sandMoneyInfo?.from;
+  const to = sandMoneyInfo?.to;
+  const amount = sandMoneyInfo?.amount;
 };
