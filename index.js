@@ -18,7 +18,6 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-
 const servicesRoutes = require("./routes/services.route");
 
 async function run() {
@@ -32,15 +31,19 @@ async function run() {
     // await client.close();
   }
 }
-
 run().catch(console.dir);
 
 // Initial API
 app.get("/", (req, res) => {
   res.send("Hello there!");
 });
+app.use((req, res, next) => {
+  res.status(404).json({
+    message: "Resource Not Found",
+  });
+});
 
 // Listening port
 app.listen(port, () => {
-  console.log("Responding to", port);
+  console.log("Welcome To Shohoj Pay Server");
 });
