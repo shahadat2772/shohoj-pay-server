@@ -8,23 +8,25 @@ require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 
-// Mongodb
 const { MongoClient, ServerApiVersion } = require("mongodb");
-// URI
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.0lpuf.mongodb.net/?retryWrites=true&w=majority`;
-// Client info
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
 // Exporting client info
 module.exports = client;
 
 // Routes for services
 const servicesRoutes = require("./routes/services.route");
+const userRouter = require("./routes/services.route");
 
 async function run() {
+  // User management routes
+  app.use(userRouter);
+  // Services routes
   app.use(servicesRoutes);
 
   try {
@@ -36,12 +38,10 @@ async function run() {
 
 run().catch(console.dir);
 
-// Initial API
 app.get("/", (req, res) => {
   res.send("Hello there!");
 });
 
-// Listening port
 app.listen(port, () => {
   console.log("Responding to", port);
 });
