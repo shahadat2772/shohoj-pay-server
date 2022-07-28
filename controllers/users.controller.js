@@ -1,6 +1,7 @@
 const userCollection = require("../models/users.model");
 
-exports.saveUserInfo = (req, res) => {
+exports.saveUserInfo = async (req, res) => {
   const { userInfo } = req.body;
-  console.log(userInfo);
+  const result = await userCollection.insertOne(userInfo);
+  res.send(result);
 };

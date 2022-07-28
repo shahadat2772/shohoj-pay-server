@@ -19,9 +19,9 @@ const client = new MongoClient(uri, {
 // Exporting client info
 module.exports = client;
 
-// Routes for services
+// IMPORT ROUTES
 const servicesRoutes = require("./routes/services.route");
-const userRouter = require("./routes/services.route");
+const userRouter = require("./routes/users.route");
 
 async function run() {
   // User management routes
