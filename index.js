@@ -18,12 +18,13 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+// Exporting client info
+module.exports = client;
 
+// Routes for services
 const servicesRoutes = require("./routes/services.route");
 
 async function run() {
-  // Collections
-
   app.use(servicesRoutes);
 
   try {
