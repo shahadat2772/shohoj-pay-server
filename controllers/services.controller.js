@@ -19,7 +19,7 @@ exports.getPaymentIntent = async (req, res) => {
 exports.addMoney = async (req, res) => {
   const { addMoneyInfo } = req.body;
   console.log(addMoneyInfo);
-  const email = addMoneyInfo?.emails[0];
+  const email = addMoneyInfo?.email;
   const addMoneyAmount = addMoneyInfo?.amount;
   const filter = { email };
   const usersBalanceInfo = await balanceCollection.findOne(filter);
@@ -40,9 +40,75 @@ exports.addMoney = async (req, res) => {
 };
 
 // Send Money
-exports.sendMoney = (req, res) => {
-  const { sandMoneyInfo } = req.body;
-  const senders = sandMoneyInfo?.from;
-  const to = sandMoneyInfo?.to;
-  const amount = sandMoneyInfo?.amount;
+exports.sendMoney = async (req, res) => {
+  const { sendMoneyInfo } = req.body;
+  // console.log(sendMoneyInfo);
+
+  const sender = sendMoneyInfo?.from;
+  const receiver = sendMoneyInfo?.to;
+  const amount = sendMoneyInfo?.amount;
+
+  // Updating senders balance
+  const sendersFilter = { email: sender };
+  const sendersBalanceInfo = await balanceCollection.findOne(sendersFilter);
+  const sendersLastBalance = sendersBalanceInfo?.balance;
+  const sendersNewBalance = (
+    parseInt(sendersLastBalance) - parseInt(amount)
+  ).toString();
+  const sendersUpdatedBalance = {
+    $set: {
+      balance: sendersNewBalance,
+    },
+  };
+  const sendersBalanceUpdateResult = await balanceCollection.updateOne(
+    sendersFilter,
+    sendersUpdatedBalance
+  );
+  const sendersStatementResult = await transactionCollection.insertOne(
+    sendMoneyInfo
+  );
+
+  if (
+    sendersBalanceUpdateResult?.modifiedCount > 0 &&
+    sendersStatementResult?.insertedId
+  ) {
+    // Updating receivers balance
+    const receiversFilter = { email: receiver };
+    const receiversBalanceInfo = await balanceCollection.findOne(
+      receiversFilter
+    );
+    const receiversLastBalance = receiversBalanceInfo?.balance;
+    const receiversNewBalance = (
+      parseInt(receiversLastBalance) + parseInt(amount)
+    ).toString();
+    const receiversUpdatedBalance = {
+      $set: {
+        balance: receiversNewBalance,
+      },
+    };
+    const receiversBalanceUpdateResult = await balanceCollection.updateOne(
+      receiversFilter,
+      receiversUpdatedBalance
+    );
+    const receiversStatement = {
+      type: "receiveMoney",
+      email: receiver,
+      from: sender,
+      to: receiver,
+      amount: amount,
+      date: sendMoneyInfo?.date,
+    };
+    const receiversStatementResult = await transactionCollection.insertOne(
+      receiversStatement
+    );
+
+    if (
+      receiversBalanceUpdateResult?.modifiedCount > 0 &&
+      receiversStatementResult.insertedId
+    ) {
+      res.send({
+        message: "success",
+      });
+    }
+  }
 };
