@@ -18,27 +18,23 @@ exports.getPaymentIntent = async (req, res) => {
 // ADD MONEY
 exports.addMoney = async (req, res) => {
   const { addMoneyInfo } = req.body;
-  const email = addMoneyInfo?.email;
+  console.log(addMoneyInfo);
+  const email = addMoneyInfo?.emails[0];
   const addMoneyAmount = addMoneyInfo?.amount;
   const filter = { email };
   const usersBalanceInfo = await balanceCollection.findOne(filter);
   const lastBalance = usersBalanceInfo?.balance;
-  const newBalance = parseInt(lastBalance) + parseInt(addMoneyAmount);
+  const newBalance = (
+    parseFloat(lastBalance) + parseInt(addMoneyAmount)
+  ).toString();
   const doc = {
     $set: {
       balance: newBalance,
     },
   };
   const balanceUpdateResult = await balanceCollection.updateOne(filter, doc);
-
   if (balanceUpdateResult?.modifiedCount > 0) {
-    const statement = {
-      email: email,
-      type: "addMoney",
-      amount: addMoneyAmount,
-      date: date,
-    };
-    const stateMentResult = await transactionCollection.insertOne(statement);
+    const stateMentResult = await transactionCollection.insertOne(addMoneyInfo);
     res.send([balanceUpdateResult, stateMentResult]);
   }
 };
@@ -46,7 +42,6 @@ exports.addMoney = async (req, res) => {
 // Send Money
 exports.sendMoney = (req, res) => {
   const { sandMoneyInfo } = req.body;
-
   const senders = sandMoneyInfo?.from;
   const to = sandMoneyInfo?.to;
   const amount = sandMoneyInfo?.amount;
