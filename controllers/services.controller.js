@@ -1,4 +1,5 @@
 const balanceCollection = require("../models/balances.model");
+const savingCollection = require("../models/savings.model");
 const transactionCollection = require("../models/transactions.model");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 const date = new Date().toLocaleDateString();
@@ -18,7 +19,6 @@ exports.getPaymentIntent = async (req, res) => {
 // ADD MONEY
 exports.addMoney = async (req, res) => {
   const { addMoneyInfo } = req.body;
-  console.log(addMoneyInfo);
   const email = addMoneyInfo?.email;
   const addMoneyAmount = addMoneyInfo?.amount;
   const filter = { email };
@@ -42,8 +42,6 @@ exports.addMoney = async (req, res) => {
 // Send Money
 exports.sendMoney = async (req, res) => {
   const { sendMoneyInfo } = req.body;
-  // console.log(sendMoneyInfo);
-
   const sender = sendMoneyInfo?.from;
   const receiver = sendMoneyInfo?.to;
   const amount = sendMoneyInfo?.amount;
@@ -109,6 +107,52 @@ exports.sendMoney = async (req, res) => {
       res.send({
         message: "success",
       });
+    }
+  }
+};
+
+// Save Money
+exports.saveMoney = async (req, res) => {
+  const { saveMoneyInfo } = req.body;
+  // console.log(saveMoneyInfo);
+  const amount = saveMoneyInfo?.amount;
+  const filter = { email: saveMoneyInfo.email };
+  // Updating balance info
+  const balanceInfo = await balanceCollection.findOne(filter);
+  const currentBalance = balanceInfo?.balance;
+  const newBalance = (parseInt(currentBalance) - parseInt(amount)).toString();
+  const updatedBalance = {
+    $set: {
+      balance: newBalance,
+    },
+  };
+  const balanceUpdateResult = await balanceCollection.updateOne(
+    filter,
+    updatedBalance
+  );
+
+  if (balanceUpdateResult?.modifiedCount > 0) {
+    // Updating saving info
+    const savingInfo = await savingCollection.findOne(filter);
+    const currentSaving = savingInfo?.saving;
+    const newSaving = (parseInt(currentSaving) + parseInt(amount)).toString();
+    const updatedSaving = {
+      $set: {
+        saving: newSaving,
+      },
+    };
+
+    const SavingUpdateResult = await savingCollection.updateOne(
+      filter,
+      updatedSaving
+    );
+
+    const statementResult = await transactionCollection.insertOne(
+      saveMoneyInfo
+    );
+
+    if (SavingUpdateResult?.modifiedCount > 0 && statementResult?.insertedId) {
+      res.send({ message: "success" });
     }
   }
 };
