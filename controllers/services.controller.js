@@ -15,7 +15,6 @@ const updateBalance = async (email, amount) => {
   const result = await balanceCollection.updateOne({ email }, doc);
   return result;
 };
-
 const updateSaving = async (email, amount) => {
   const savingInfo = await savingCollection.findOne({ email });
   const lastSaving = parseInt(savingInfo?.saving);
@@ -28,7 +27,6 @@ const updateSaving = async (email, amount) => {
   const result = await savingCollection.updateOne({ email }, doc);
   return result;
 };
-
 const addStatement = async (statement) => {
   const result = await transactionCollection.insertOne(statement);
   return result;
