@@ -22,13 +22,15 @@ module.exports = client;
 // IMPORT ROUTES
 const servicesRoutes = require("./routes/services.route");
 const userRouter = require("./routes/users.route");
+const stripeRouter = require("./routes/stripe.route");
 
 async function run() {
   // User management routes
   app.use(userRouter);
   // Services routes
   app.use(servicesRoutes);
-
+  // Stripe router
+  app.use(stripeRouter);
   try {
     await client.connect();
   } finally {
