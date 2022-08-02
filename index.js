@@ -23,8 +23,11 @@ module.exports = client;
 const servicesRoutes = require("./routes/services.route");
 const userRouter = require("./routes/users.route");
 const stripeRouter = require("./routes/stripe.route");
+const balanceRoute = require("./routes/balance.route");
 
 async function run() {
+  // User management routes
+  app.use(balanceRoute);
   // User management routes
   app.use(userRouter);
   // Services routes
@@ -37,13 +40,17 @@ async function run() {
     // await client.close();
   }
 }
-
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Hello from Shohoj Pay!");
 });
+app.use((req, res, next) => {
+  res.status(404).json({
+    message: "Resource Not Found",
+  });
+});
 
 app.listen(port, () => {
-  console.log("Responding to", port);
+  console.log("Welcome To Shohoj Pay Server");
 });
