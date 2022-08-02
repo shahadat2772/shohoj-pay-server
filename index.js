@@ -8,23 +8,32 @@ require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 
-// Mongodb
 const { MongoClient, ServerApiVersion } = require("mongodb");
-// URI
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.0lpuf.mongodb.net/?retryWrites=true&w=majority`;
-// Client info
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
+
+// Exporting client info
+module.exports = client;
+
+// IMPORT ROUTES
 const servicesRoutes = require("./routes/services.route");
+const userRouter = require("./routes/users.route");
+const stripeRouter = require("./routes/stripe.route");
+const balanceRoute = require("./routes/balance.route");
 
 async function run() {
-  // Collections
-
+  // User management routes
+  app.use(balanceRoute);
+  // User management routes
+  app.use(userRouter);
+  // Services routes
   app.use(servicesRoutes);
-
+  // Stripe router
+  app.use(stripeRouter);
   try {
     await client.connect();
   } finally {
@@ -33,9 +42,8 @@ async function run() {
 }
 run().catch(console.dir);
 
-// Initial API
 app.get("/", (req, res) => {
-  res.send("Hello there!");
+  res.send("Hello from Shohoj Pay!");
 });
 app.use((req, res, next) => {
   res.status(404).json({
@@ -43,7 +51,6 @@ app.use((req, res, next) => {
   });
 });
 
-// Listening port
 app.listen(port, () => {
   console.log("Welcome To Shohoj Pay Server");
 });
