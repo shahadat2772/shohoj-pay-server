@@ -52,5 +52,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log("Welcome To Shohoj Pay Server");
+  console.log("Responding to", port);
 });
