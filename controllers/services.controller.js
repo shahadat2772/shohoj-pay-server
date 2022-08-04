@@ -105,8 +105,26 @@ exports.saveMoney = async (req, res) => {
   const { saveMoneyInfo } = req.body;
   const email = saveMoneyInfo.email;
   const amount = parseInt(saveMoneyInfo?.amount);
-  const updateBalanceResult = updateBalance(email, -amount);
-  const updateSavingResult = updateSaving(email, amount);
-  const savingStatementResult = addStatement(saveMoneyInfo);
-  res.send({ updateBalanceResult, updateSavingResult, savingStatementResult });
+  const updateBalanceResult = await updateBalance(email, -amount);
+  if (updateBalanceResult.message === "insufficient") {
+    res.send({
+      error: "insufficient Balance.",
+    });
+    return;
+  }
+  const updateSavingResult = await updateSaving(email, amount);
+  const savingStatementResult = await addStatement(saveMoneyInfo);
+  if (
+    updateBalanceResult.message == "success" &&
+    updateSavingResult.modifiedCount > 0 &&
+    savingStatementResult.insertedId
+  ) {
+    res.send({
+      success: `$${amount} saved successfully`,
+    });
+  } else {
+    res.send({
+      error: "Doh, something terrible happened.",
+    });
+  }
 };
