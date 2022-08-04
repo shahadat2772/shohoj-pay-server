@@ -24,10 +24,16 @@ const servicesRoutes = require("./routes/services.route");
 const userRouter = require("./routes/users.route");
 const stripeRouter = require("./routes/stripe.route");
 const balanceRoute = require("./routes/balance.route");
+const userSavingsRoute = require("./routes/savings.route");
+const userTransactionRoute = require("./routes/transaction.route");
 
 async function run() {
-  // User management routes
+  // User Balance routes
   app.use(balanceRoute);
+  // USER SAVINGS ROUTE
+  app.use(userSavingsRoute);
+  // USER TRANSACTION STATUS
+  app.use(userTransactionRoute);
   // User management routes
   app.use(userRouter);
   // Services routes
