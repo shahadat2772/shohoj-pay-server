@@ -24,6 +24,10 @@ const updateBalance = async (email, amount) => {
     return {
       message: "success",
     };
+  } else {
+    return {
+      message: "failed",
+    };
   }
 };
 
@@ -55,8 +59,31 @@ exports.addMoney = async (req, res) => {
   const { addMoneyInfo } = req.body;
   const email = addMoneyInfo?.email;
   const amount = parseInt(addMoneyInfo?.amount);
-  const result = await updateBalance(email, amount);
-  res.send(result);
+  const updateBalanceResult = await updateBalance(email, amount);
+  if (updateBalanceResult.message !== "success") {
+    res.send({
+      error: "Something went wrong.",
+    });
+    return;
+  }
+  const addMoneyStatement = {
+    ...addMoneyInfo,
+    date,
+    time,
+  };
+  const addMoneyStatementResult = await addStatement(addMoneyStatement);
+  if (
+    addMoneyStatementResult.insertedId &&
+    updateBalanceResult.message === "success"
+  ) {
+    res.send({
+      success: `$${amount} added successfully`,
+    });
+  } else {
+    res.send({
+      error: "Doh! Something terrible happened.",
+    });
+  }
 };
 
 // SEND MONEY
