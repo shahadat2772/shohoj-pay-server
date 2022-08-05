@@ -3,6 +3,7 @@ const savingCollection = require("../models/savings.model");
 const transactionCollection = require("../models/transactions.model");
 const userCollection = require("../models/users.model");
 const date = new Date().toLocaleDateString();
+const time = new Date().toLocaleTimeString();
 
 const updateBalance = async (email, amount) => {
   const balanceInfo = await balanceCollection.findOne({ email });
@@ -38,6 +39,7 @@ const updateSaving = async (email, amount) => {
   const result = await savingCollection.updateOne({ email }, doc);
   return result;
 };
+
 const addStatement = async (statement) => {
   const result = await transactionCollection.insertOne(statement);
   return result;
@@ -121,6 +123,60 @@ exports.saveMoney = async (req, res) => {
   ) {
     res.send({
       success: `$${amount} saved successfully`,
+    });
+  } else {
+    res.send({
+      error: "Doh, something terrible happened.",
+    });
+  }
+};
+
+// Request Money
+exports.requestMoney = async (req, res) => {
+  const { requestMoneyInfo } = req?.body;
+
+  const from = requestMoneyInfo?.from;
+  const to = requestMoneyInfo?.to;
+  const amount = requestMoneyInfo?.amount;
+
+  const sendersInfo = await isExists(to);
+  if (!sendersInfo) {
+    res.send({
+      error: "Sender not found.",
+    });
+    return;
+  }
+  const requestersStatement = {
+    type: "requestMoney",
+    status: "pending",
+    with: sendersInfo?.name,
+    amount: amount,
+    email: from,
+    from: from,
+    to: to,
+    date,
+    time,
+  };
+  const requestersStatementResult = await addStatement(requestersStatement);
+  const sendersStatement = {
+    type: "requestMoney",
+    status: "pending",
+    with: requestMoneyInfo?.name,
+    amount: amount,
+    email: to,
+    from: from,
+    to: to,
+    date,
+    time,
+  };
+  const sendersStatementResult = await addStatement(sendersStatement);
+
+  if (
+    requestersStatementResult.insertedId &&
+    sendersStatementResult.insertedId
+  ) {
+    res.send({
+      success: `$${amount} requested successfully.`,
     });
   } else {
     res.send({
