@@ -3,7 +3,7 @@ const {
   addStatement,
   updateBalance,
 } = require("../shared.logics");
-const requestsCollection = require("../../models/moneyRequests.model");
+const requestCollection = require("../../models/moneyRequests.model");
 
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
@@ -24,7 +24,7 @@ exports.requestMoney = async (req, res) => {
     ...requestMoneyInfo,
     donorName: donorInfo?.name,
   };
-  const moneyRequestResult = await requestsCollection.insertOne(moneyRequest);
+  const moneyRequestResult = await requestCollection.insertOne(moneyRequest);
   if (moneyRequestResult.insertedId) {
     res.send({
       success: `$${amount} requested successfully.`,
@@ -82,3 +82,21 @@ exports.approveMoneyRequest = async (req, res) => {
     });
   }
 };
+
+// Get requests
+// exports.getRequests = async (req, res) => {
+//   const { email, type } = req?.body;
+//   // const email = req.headers?.email;
+//   // const type = req.headers?.type;
+//   console.log(email, type);
+//   let filter;
+//   if (type === "incoming") {
+//     filter = { to: email };
+//   } else {
+//     filter = { from: email };
+//   }
+//   const requests = await requestCollection.find(filter);
+//   const users = await userCollection.find({});
+//   console.log(users);
+//   res.send(users);
+// };

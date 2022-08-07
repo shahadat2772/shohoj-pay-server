@@ -4,6 +4,7 @@ const { addMoney } = require("../controllers/services/addMoney.controller");
 const {
   requestMoney,
   approveMoneyRequest,
+  getRequests,
 } = require("../controllers/services/requestMoney.controller");
 const { saveMoney } = require("../controllers/services/saveMoney.controller");
 const { sendMoney } = require("../controllers/services/sendMoney.controller");
@@ -18,5 +19,7 @@ router.post("/requestMoney", requestMoney);
 router.post("/saveMoney", saveMoney);
 // Approve money request
 router.post("/approveRequestMoney", approveMoneyRequest);
+// Get requests
+router.post("/getRequests", getRequests);
 
 module.exports = router;
