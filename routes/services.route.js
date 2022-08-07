@@ -4,18 +4,21 @@ const {
   getPaymentIntent,
   // sendMoney,
   saveMoney,
-  requestMoney,
+  // requestMoney,
 } = require("../controllers/services.controller");
 const { addMoney } = require("../controllers/services/addMoney.controller");
+const {
+  requestMoney,
+} = require("../controllers/services/requestMoney.controller");
 const { sendMoney } = require("../controllers/services/sendMoney.controller");
 
 // Add Money
 router.post("/addMoney", addMoney);
 // Send Money
 router.post("/sendMoney", sendMoney);
-// Save Money
-router.post("/saveMoney", saveMoney);
 // Request Money
 router.post("/requestMoney", requestMoney);
+// Save Money
+router.post("/saveMoney", saveMoney);
 
 module.exports = router;

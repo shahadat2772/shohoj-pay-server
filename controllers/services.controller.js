@@ -135,58 +135,58 @@ exports.addMoney = async (req, res) => {
 // };
 
 // Request Money
-exports.requestMoney = async (req, res) => {
-  const { requestMoneyInfo } = req?.body;
+// exports.requestMoney = async (req, res) => {
+//   const { requestMoneyInfo } = req?.body;
 
-  const from = requestMoneyInfo?.from;
-  const to = requestMoneyInfo?.to;
-  const amount = requestMoneyInfo?.amount;
+//   const from = requestMoneyInfo?.from;
+//   const to = requestMoneyInfo?.to;
+//   const amount = requestMoneyInfo?.amount;
 
-  const sendersInfo = await isExists(to);
-  if (!sendersInfo) {
-    res.send({
-      error: "Sender not found.",
-    });
-    return;
-  }
-  const requestersStatement = {
-    type: "requestMoney",
-    status: "pending",
-    name: sendersInfo?.name,
-    amount: amount,
-    email: from,
-    from: from,
-    to: to,
-    date,
-    time,
-  };
-  const requestersStatementResult = await addStatement(requestersStatement);
-  const sendersStatement = {
-    type: "requestMoney",
-    status: "pending",
-    name: requestMoneyInfo?.name,
-    amount: amount,
-    email: to,
-    from: from,
-    to: to,
-    date,
-    time,
-  };
-  const sendersStatementResult = await addStatement(sendersStatement);
+//   const sendersInfo = await isExists(to);
+//   if (!sendersInfo) {
+//     res.send({
+//       error: "Sender not found.",
+//     });
+//     return;
+//   }
+//   const requestersStatement = {
+//     type: "requestMoney",
+//     status: "pending",
+//     name: sendersInfo?.name,
+//     amount: amount,
+//     email: from,
+//     from: from,
+//     to: to,
+//     date,
+//     time,
+//   };
+//   const requestersStatementResult = await addStatement(requestersStatement);
+//   const sendersStatement = {
+//     type: "requestMoney",
+//     status: "pending",
+//     name: requestMoneyInfo?.name,
+//     amount: amount,
+//     email: to,
+//     from: from,
+//     to: to,
+//     date,
+//     time,
+//   };
+//   const sendersStatementResult = await addStatement(sendersStatement);
 
-  if (
-    requestersStatementResult.insertedId &&
-    sendersStatementResult.insertedId
-  ) {
-    res.send({
-      success: `$${amount} requested successfully.`,
-    });
-  } else {
-    res.send({
-      error: "Doh, something terrible happened.",
-    });
-  }
-};
+//   if (
+//     requestersStatementResult.insertedId &&
+//     sendersStatementResult.insertedId
+//   ) {
+//     res.send({
+//       success: `$${amount} requested successfully.`,
+//     });
+//   } else {
+//     res.send({
+//       error: "Doh, something terrible happened.",
+//     });
+//   }
+// };
 
 // Save Money
 exports.saveMoney = async (req, res) => {
