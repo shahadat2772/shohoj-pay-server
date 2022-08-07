@@ -3,10 +3,11 @@ const router = express.Router();
 const {
   getPaymentIntent,
   sendMoney,
-  addMoney,
+  // addMoney,
   saveMoney,
   requestMoney,
 } = require("../controllers/services.controller");
+const { addMoney } = require("../controllers/services/addMoney.controller");
 
 // Add Money
 router.post("/addMoney", addMoney);
