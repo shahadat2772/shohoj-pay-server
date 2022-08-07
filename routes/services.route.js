@@ -3,6 +3,7 @@ const router = express.Router();
 const { addMoney } = require("../controllers/services/addMoney.controller");
 const {
   requestMoney,
+  approveMoneyRequest,
 } = require("../controllers/services/requestMoney.controller");
 const { saveMoney } = require("../controllers/services/saveMoney.controller");
 const { sendMoney } = require("../controllers/services/sendMoney.controller");
@@ -15,5 +16,7 @@ router.post("/sendMoney", sendMoney);
 router.post("/requestMoney", requestMoney);
 // Save Money
 router.post("/saveMoney", saveMoney);
+// Approve money request
+router.post("/approveRequestMoney", approveMoneyRequest);
 
 module.exports = router;

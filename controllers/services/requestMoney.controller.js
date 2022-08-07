@@ -1,4 +1,9 @@
-const { isUserExists, addStatement } = require("../shared.logics");
+const {
+  getUserInfo,
+  addStatement,
+  updateBalance,
+} = require("../shared.logics");
+const requestsCollection = require("../../models/moneyRequests.model");
 
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
@@ -6,53 +11,74 @@ const time = new Date().toLocaleTimeString();
 // Request Money
 exports.requestMoney = async (req, res) => {
   const { requestMoneyInfo } = req?.body;
-
-  const from = requestMoneyInfo?.from;
   const to = requestMoneyInfo?.to;
   const amount = requestMoneyInfo?.amount;
-
-  const sendersInfo = await isUserExists(to);
-  if (!sendersInfo) {
+  const donorInfo = await getUserInfo(to);
+  if (!donorInfo) {
     res.send({
       error: "Sender not found.",
     });
     return;
   }
-  const requestersStatement = {
-    type: "requestMoney",
-    status: "pending",
-    name: sendersInfo?.name,
-    amount: amount,
-    email: from,
-    from: from,
-    to: to,
-    date,
-    time,
+  const moneyRequest = {
+    ...requestMoneyInfo,
+    donorName: donorInfo?.name,
   };
-  const requestersStatementResult = await addStatement(requestersStatement);
-  const sendersStatement = {
-    type: "requestMoney",
-    status: "pending",
-    name: requestMoneyInfo?.name,
-    amount: amount,
-    email: to,
-    from: from,
-    to: to,
-    date,
-    time,
-  };
-  const sendersStatementResult = await addStatement(sendersStatement);
-
-  if (
-    requestersStatementResult.insertedId &&
-    sendersStatementResult.insertedId
-  ) {
+  const moneyRequestResult = await requestsCollection.insertOne(moneyRequest);
+  if (moneyRequestResult.insertedId) {
     res.send({
       success: `$${amount} requested successfully.`,
     });
   } else {
     res.send({
-      error: "Doh, something terrible happened.",
+      error: `Doh! something terrible happened.`,
+    });
+  }
+};
+
+exports.approveMoneyRequest = async (req, res) => {
+  const { requestMoneyInfo } = req?.body;
+  const amount = parseInt(requestMoneyInfo?.amount);
+  const requesterEmail = requestMoneyInfo?.from;
+  const donorEmail = requestMoneyInfo?.to;
+  const donorsBalanceUpdate = await updateBalance(donorEmail, -amount);
+  if (donorsBalanceUpdate.message === "insufficient") {
+    res.send({
+      error: "Insufficient balance.",
+    });
+    return;
+  }
+  const donorStatement = {
+    ...requestMoneyInfo,
+    name: requestMoneyInfo?.requesterName,
+    email: requestMoneyInfo.to,
+    status: "approved",
+    time,
+    date,
+  };
+  delete donorStatement.requesterName;
+  delete donorStatement.donorName;
+  const donorsStatementResult = await addStatement(donorStatement);
+
+  const requestersBalanceUpdate = await updateBalance(requesterEmail, amount);
+  const requesterStatement = {
+    ...donorStatement,
+    name: requestMoneyInfo.donorName,
+    email: requestMoneyInfo.from,
+  };
+  const requesterStatementResult = await addStatement(requesterStatement);
+
+  if (
+    donorsStatementResult.insertedId &&
+    requestersBalanceUpdate.message === "success" &&
+    requesterStatementResult.insertedId
+  ) {
+    res.send({
+      success: `Money request for $${amount} approved.`,
+    });
+  } else {
+    res.send({
+      error: `Could not approve the money request.`,
     });
   }
 };
