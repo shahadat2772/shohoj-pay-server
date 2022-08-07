@@ -1,6 +1,4 @@
 const { updateBalance, addStatement } = require("../shared.logics");
-const date = new Date().toLocaleDateString();
-const time = new Date().toLocaleTimeString();
 
 // ADD MONEY
 exports.addMoney = async (req, res) => {
@@ -14,13 +12,7 @@ exports.addMoney = async (req, res) => {
     });
     return;
   }
-  const addMoneyStatement = {
-    ...addMoneyInfo,
-    name: "Add Money",
-    date,
-    time,
-  };
-  const addMoneyStatementResult = await addStatement(addMoneyStatement);
+  const addMoneyStatementResult = await addStatement(addMoneyInfo);
   if (
     addMoneyStatementResult.insertedId &&
     updateBalanceResult.message === "success"
