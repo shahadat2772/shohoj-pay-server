@@ -39,10 +39,7 @@ exports.sendMoney = async (req, res) => {
     type: "receiveMoney",
     name: sendMoneyInfo?.name,
     email: receiversEmail,
-    from: sendersEmail,
-    to: receiversEmail,
-    amount: sendMoneyInfo?.amount,
-    date: date,
+    ...sendMoneyInfo,
   };
   const receiversStatementResult = await addStatement(receiversStatement);
   if (
