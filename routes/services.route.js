@@ -1,15 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const {
-  getPaymentIntent,
-  // sendMoney,
-  saveMoney,
-  // requestMoney,
-} = require("../controllers/services.controller");
 const { addMoney } = require("../controllers/services/addMoney.controller");
 const {
   requestMoney,
 } = require("../controllers/services/requestMoney.controller");
+const { saveMoney } = require("../controllers/services/saveMoney.controller");
 const { sendMoney } = require("../controllers/services/sendMoney.controller");
 
 // Add Money

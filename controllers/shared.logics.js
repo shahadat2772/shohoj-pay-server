@@ -49,7 +49,7 @@ exports.addStatement = async (statement) => {
   return result;
 };
 
-exports.isExists = async (email) => {
+exports.isUserExists = async (email) => {
   const user = await userCollection.findOne({ email });
   return user;
 };

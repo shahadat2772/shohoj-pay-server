@@ -1,4 +1,8 @@
-const { isExists, updateBalance, addStatement } = require("../shared.logics");
+const {
+  isUserExists,
+  updateBalance,
+  addStatement,
+} = require("../shared.logics");
 
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
@@ -8,7 +12,7 @@ exports.sendMoney = async (req, res) => {
   const { sendMoneyInfo } = req?.body;
   const sendersEmail = sendMoneyInfo?.from;
   const receiversEmail = sendMoneyInfo?.to;
-  const receiversInfo = await isExists(receiversEmail);
+  const receiversInfo = await isUserExists(receiversEmail);
   if (!receiversInfo) {
     res.send({
       error: "Receiver not found.",
