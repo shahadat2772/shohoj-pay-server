@@ -1,7 +1,7 @@
-const balanceCollection = require("../../models/balances.model");
-const savingCollection = require("../../models/savings.model");
-const transactionCollection = require("../../models/transactions.model");
-const userCollection = require("../../models/users.model");
+const balanceCollection = require("../models/balances.model");
+const savingCollection = require("../models/savings.model");
+const transactionCollection = require("../models/transactions.model");
+const userCollection = require("../models/users.model");
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
 

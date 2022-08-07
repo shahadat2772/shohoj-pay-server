@@ -1,4 +1,6 @@
-const { updateBalance, addStatement } = require("../shared/shared.logics");
+const { updateBalance, addStatement } = require("../shared.logics");
+const date = new Date().toLocaleDateString();
+const time = new Date().toLocaleTimeString();
 
 // ADD MONEY
 exports.addMoney = async (req, res) => {

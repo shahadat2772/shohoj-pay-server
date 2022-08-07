@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   getPaymentIntent,
   sendMoney,
-  // addMoney,
   saveMoney,
   requestMoney,
 } = require("../controllers/services.controller");
