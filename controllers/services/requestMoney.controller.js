@@ -34,7 +34,6 @@ exports.requestMoney = async (req, res) => {
     ...requestMoneyInfo,
     donorName: donorInfo?.name,
   };
-  console.log("Money request info", moneyRequest);
   const moneyRequestResult = await requestCollection.insertOne(moneyRequest);
   if (moneyRequestResult.insertedId) {
     res.send({
@@ -74,7 +73,6 @@ exports.approveMoneyRequest = async (req, res) => {
   delete donorStatement.requesterName;
   delete donorStatement.donorName;
   delete donorStatement._id;
-  // console.log("Donor statement", donorStatement);
   const donorsStatementResult = await addStatement(donorStatement);
 
   // Adding statement and updating balance for requester
@@ -85,7 +83,6 @@ exports.approveMoneyRequest = async (req, res) => {
     email: requestMoneyInfo.from,
   };
   delete requesterStatement._id;
-  // console.log("Requester statement", requesterStatement);
   const requesterStatementResult = await addStatement(requesterStatement);
 
   // Updating the money request
