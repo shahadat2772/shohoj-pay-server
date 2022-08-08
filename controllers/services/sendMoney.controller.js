@@ -10,6 +10,7 @@ const time = new Date().toLocaleTimeString();
 // SEND MONEY
 exports.sendMoney = async (req, res) => {
   const { sendMoneyInfo } = req?.body;
+  // console.log("send money info", sendMoneyInfo);
   const sendersEmail = sendMoneyInfo?.from;
   const receiversEmail = sendMoneyInfo?.to;
   const receiversInfo = await getUserInfo(receiversEmail);
@@ -27,21 +28,26 @@ exports.sendMoney = async (req, res) => {
     });
     return;
   }
-  const sendersStatementResult = await addStatement({
+  const sendersStatement = {
     ...sendMoneyInfo,
-    name: receiversInfo?.name,
-    email: sendersEmail,
-  });
+    userName: receiversInfo?.name,
+    userEmail: receiversEmail,
+  };
+  // console.log("Sender statement", sendersStatement);
+  const sendersStatementResult = await addStatement(sendersStatement);
   const updateReceiversBalanceResult = await updateBalance(
     receiversEmail,
     amount
   );
   const receiversStatement = {
-    type: "receiveMoney",
-    name: sendMoneyInfo?.name,
-    email: receiversEmail,
     ...sendMoneyInfo,
+    name: receiversInfo?.name,
+    type: "Receive Money",
+    userName: sendMoneyInfo?.name,
+    userEmail: sendersEmail,
+    email: receiversEmail,
   };
+  // console.log("Receivers statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
   if (
     sendersStatementResult?.insertedId &&
