@@ -4,6 +4,7 @@ const {
   updateBalance,
 } = require("../shared.logics");
 const requestCollection = require("../../models/moneyRequests.model");
+const userCollection = require("../../models/users.model");
 
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
@@ -41,6 +42,8 @@ exports.approveMoneyRequest = async (req, res) => {
   const amount = parseInt(requestMoneyInfo?.amount);
   const requesterEmail = requestMoneyInfo?.from;
   const donorEmail = requestMoneyInfo?.to;
+
+  // Adding statement and updating balance for donor
   const donorsBalanceUpdate = await updateBalance(donorEmail, -amount);
   if (donorsBalanceUpdate.message === "insufficient") {
     res.send({
@@ -58,14 +61,17 @@ exports.approveMoneyRequest = async (req, res) => {
   };
   delete donorStatement.requesterName;
   delete donorStatement.donorName;
+  delete donorStatement._id;
   const donorsStatementResult = await addStatement(donorStatement);
 
+  // Adding statement and updating balance for requester
   const requestersBalanceUpdate = await updateBalance(requesterEmail, amount);
   const requesterStatement = {
     ...donorStatement,
     name: requestMoneyInfo.donorName,
     email: requestMoneyInfo.from,
   };
+  delete requesterStatement._id;
   const requesterStatementResult = await addStatement(requesterStatement);
 
   if (
@@ -84,19 +90,15 @@ exports.approveMoneyRequest = async (req, res) => {
 };
 
 // Get requests
-// exports.getRequests = async (req, res) => {
-//   const { email, type } = req?.body;
-//   // const email = req.headers?.email;
-//   // const type = req.headers?.type;
-//   console.log(email, type);
-//   let filter;
-//   if (type === "incoming") {
-//     filter = { to: email };
-//   } else {
-//     filter = { from: email };
-//   }
-//   const requests = await requestCollection.find(filter);
-//   const users = await userCollection.find({});
-//   console.log(users);
-//   res.send(users);
-// };
+exports.getRequests = async (req, res) => {
+  const email = req.headers?.email;
+  const type = req.headers?.type;
+  let filter;
+  if (type === "incoming") {
+    filter = { to: email };
+  } else {
+    filter = { from: email };
+  }
+  const requestsResult = await requestCollection.find(filter).toArray();
+  res.send(requestsResult);
+};

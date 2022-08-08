@@ -20,6 +20,6 @@ router.post("/saveMoney", saveMoney);
 // Approve money request
 router.post("/approveRequestMoney", approveMoneyRequest);
 // Get requests
-router.post("/getRequests", getRequests);
+router.get("/getRequests", getRequests);
 
 module.exports = router;

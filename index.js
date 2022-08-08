@@ -26,6 +26,7 @@ const stripeRouter = require("./routes/stripe.route");
 const balanceRoute = require("./routes/balance.route");
 const userSavingsRoute = require("./routes/savings.route");
 const userTransactionRoute = require("./routes/transaction.route");
+// const requestsRoute = require("./routes/request.route");
 
 async function run() {
   // User Balance routes
@@ -40,6 +41,7 @@ async function run() {
   app.use(servicesRoutes);
   // Stripe router
   app.use(stripeRouter);
+  // app.use(requestsRoute);
   try {
     await client.connect();
   } finally {
