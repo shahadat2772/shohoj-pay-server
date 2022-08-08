@@ -13,6 +13,14 @@ exports.sendMoney = async (req, res) => {
   // console.log("send money info", sendMoneyInfo);
   const sendersEmail = sendMoneyInfo?.from;
   const receiversEmail = sendMoneyInfo?.to;
+
+  if (sendersEmail === receiversEmail) {
+    res.send({
+      error: "You have entered your email as receiver's email.",
+    });
+    return;
+  }
+
   const receiversInfo = await getUserInfo(receiversEmail);
   if (!receiversInfo) {
     res.send({
