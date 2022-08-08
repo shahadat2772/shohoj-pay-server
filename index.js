@@ -21,18 +21,25 @@ module.exports = client;
 
 // IMPORT ROUTES
 const servicesRoutes = require("./routes/services.route");
+const jwtUserRoute = require("./routes/jwtUser.route");
 const userRouter = require("./routes/users.route");
 const stripeRouter = require("./routes/stripe.route");
 const balanceRoute = require("./routes/balance.route");
 const userSavingsRoute = require("./routes/savings.route");
 const userTransactionRoute = require("./routes/transaction.route");
+<<<<<<< HEAD
 // const requestsRoute = require("./routes/request.route");
+=======
+const getUserInfo = require("./routes/users.route");
+>>>>>>> 49c552d13ea85b4a9b395e83d84af2750503f0d8
 
 async function run() {
   // User Balance routes
   app.use(balanceRoute);
   // USER SAVINGS ROUTE
   app.use(userSavingsRoute);
+  // JWT USER ROUTE
+  app.use(jwtUserRoute);
   // USER TRANSACTION STATUS
   app.use(userTransactionRoute);
   // User management routes
@@ -41,7 +48,11 @@ async function run() {
   app.use(servicesRoutes);
   // Stripe router
   app.use(stripeRouter);
+<<<<<<< HEAD
   // app.use(requestsRoute);
+=======
+
+>>>>>>> 49c552d13ea85b4a9b395e83d84af2750503f0d8
   try {
     await client.connect();
   } finally {
