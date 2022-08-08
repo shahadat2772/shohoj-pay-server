@@ -30,6 +30,7 @@ exports.sendMoney = async (req, res) => {
   const sendersStatementResult = await addStatement({
     ...sendMoneyInfo,
     name: receiversInfo?.name,
+    email: sendersEmail,
   });
   const updateReceiversBalanceResult = await updateBalance(
     receiversEmail,
