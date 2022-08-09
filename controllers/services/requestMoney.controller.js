@@ -34,6 +34,7 @@ exports.requestMoney = async (req, res) => {
     ...requestMoneyInfo,
     donorName: donorInfo?.name,
   };
+  // console.log("Money request info", moneyRequest);
   const moneyRequestResult = await requestCollection.insertOne(moneyRequest);
   if (moneyRequestResult.insertedId) {
     res.send({
@@ -48,11 +49,13 @@ exports.requestMoney = async (req, res) => {
 
 exports.approveMoneyRequest = async (req, res) => {
   const { requestMoneyInfo } = req?.body;
-  console.log("Approval request info", requestMoneyInfo);
-  const amount = parseInt(requestMoneyInfo?.amount);
+
+  const requesterName = requestMoneyInfo?.requesterName;
+  const donorName = requestMoneyInfo?.donorName;
   const requesterEmail = requestMoneyInfo?.from;
   const donorEmail = requestMoneyInfo?.to;
 
+  const amount = parseInt(requestMoneyInfo?.amount);
   // Adding statement and updating balance for donor
   const donorsBalanceUpdate = await updateBalance(donorEmail, -amount);
   if (donorsBalanceUpdate.message === "insufficient") {
@@ -63,9 +66,10 @@ exports.approveMoneyRequest = async (req, res) => {
   }
   const donorStatement = {
     ...requestMoneyInfo,
-    userName: requestMoneyInfo?.requesterName,
+    userName: requesterName,
     userEmail: requesterEmail,
-    email: requestMoneyInfo.to,
+    name: donorName,
+    email: donorEmail,
     status: "approved",
     time,
     date,
@@ -73,16 +77,20 @@ exports.approveMoneyRequest = async (req, res) => {
   delete donorStatement.requesterName;
   delete donorStatement.donorName;
   delete donorStatement._id;
+  // console.log("donor statement", donorStatement);
   const donorsStatementResult = await addStatement(donorStatement);
 
   // Adding statement and updating balance for requester
   const requestersBalanceUpdate = await updateBalance(requesterEmail, amount);
   const requesterStatement = {
     ...donorStatement,
-    name: requestMoneyInfo.donorName,
-    email: requestMoneyInfo.from,
+    name: requesterName,
+    email: requesterEmail,
+    userName: donorName,
+    userEmail: donorEmail,
   };
   delete requesterStatement._id;
+  // console.log("requester statement", requesterStatement);
   const requesterStatementResult = await addStatement(requesterStatement);
 
   // Updating the money request

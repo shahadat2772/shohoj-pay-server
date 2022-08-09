@@ -20,6 +20,7 @@ exports.saveMoney = async (req, res) => {
     return;
   }
   const updateSavingResult = await updateSaving(email, amount);
+  // console.log("Save money statement", saveMoneyInfo);
   const savingStatementResult = await addStatement(saveMoneyInfo);
   if (
     updateBalanceResult.message == "success" &&

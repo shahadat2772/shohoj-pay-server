@@ -42,6 +42,7 @@ exports.sendMoney = async (req, res) => {
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
   };
+  // console.log("Senders Statement", sendersStatement);
   const sendersStatementResult = await addStatement(sendersStatement);
   const updateReceiversBalanceResult = await updateBalance(
     receiversEmail,
@@ -57,6 +58,7 @@ exports.sendMoney = async (req, res) => {
     userEmail: sendersEmail,
     email: receiversEmail,
   };
+  // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
   if (
     sendersStatementResult?.insertedId &&
