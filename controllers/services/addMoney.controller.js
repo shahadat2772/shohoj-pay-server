@@ -12,6 +12,7 @@ exports.addMoney = async (req, res) => {
     });
     return;
   }
+  // console.log("Add Money statement", addMoneyInfo);
   const addMoneyStatementResult = await addStatement(addMoneyInfo);
   if (
     addMoneyStatementResult.insertedId &&

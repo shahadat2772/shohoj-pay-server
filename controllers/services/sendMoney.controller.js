@@ -12,6 +12,14 @@ exports.sendMoney = async (req, res) => {
   const { sendMoneyInfo } = req?.body;
   const sendersEmail = sendMoneyInfo?.from;
   const receiversEmail = sendMoneyInfo?.to;
+
+  if (sendersEmail === receiversEmail) {
+    res.send({
+      error: "You have entered your email as receiver's email.",
+    });
+    return;
+  }
+
   const receiversInfo = await getUserInfo(receiversEmail);
   if (!receiversInfo) {
     res.send({
@@ -27,20 +35,30 @@ exports.sendMoney = async (req, res) => {
     });
     return;
   }
-  const sendersStatementResult = await addStatement({
+
+  // For sender
+  const sendersStatement = {
     ...sendMoneyInfo,
-    name: receiversInfo?.name,
-  });
+    userName: receiversInfo?.name,
+    userEmail: receiversEmail,
+  };
+  // console.log("Senders Statement", sendersStatement);
+  const sendersStatementResult = await addStatement(sendersStatement);
   const updateReceiversBalanceResult = await updateBalance(
     receiversEmail,
     amount
   );
+
+  // For receiver
   const receiversStatement = {
-    type: "receiveMoney",
-    name: sendMoneyInfo?.name,
-    email: receiversEmail,
     ...sendMoneyInfo,
+    name: receiversInfo?.name,
+    type: "Receive Money",
+    userName: sendMoneyInfo?.name,
+    userEmail: sendersEmail,
+    email: receiversEmail,
   };
+  // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
   if (
     sendersStatementResult?.insertedId &&
