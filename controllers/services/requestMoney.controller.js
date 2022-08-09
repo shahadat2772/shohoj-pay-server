@@ -84,6 +84,7 @@ exports.approveMoneyRequest = async (req, res) => {
   const requestersBalanceUpdate = await updateBalance(requesterEmail, amount);
   const requesterStatement = {
     ...donorStatement,
+    type: "Receive Money",
     name: requesterName,
     email: requesterEmail,
     userName: donorName,
