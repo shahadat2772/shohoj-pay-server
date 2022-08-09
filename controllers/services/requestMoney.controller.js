@@ -70,7 +70,7 @@ exports.approveMoneyRequest = async (req, res) => {
     userEmail: requesterEmail,
     name: donorName,
     email: donorEmail,
-    status: "approved",
+    status: "Approved",
     time,
     date,
   };
@@ -97,7 +97,7 @@ exports.approveMoneyRequest = async (req, res) => {
   // Updating the money request
   const updatedMoneyRequest = {
     $set: {
-      status: "approved",
+      status: "Approved",
     },
   };
   const moneyRequestFilter = { _id: ObjectId(requestMoneyInfo._id) };
