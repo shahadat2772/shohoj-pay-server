@@ -7,7 +7,11 @@ const requestCollection = require("../../models/moneyRequests.model");
 const userCollection = require("../../models/users.model");
 const { ObjectId, ObjectID } = require("mongodb");
 
-const date = new Date().toLocaleDateString();
+const fullDate = new Date().toLocaleDateString();
+const date = new Date().toLocaleDateString("en-us", {
+  year: "numeric",
+  month: "short",
+});
 const time = new Date().toLocaleTimeString();
 
 // Request Money
@@ -71,6 +75,7 @@ exports.approveMoneyRequest = async (req, res) => {
     name: donorName,
     email: donorEmail,
     status: "Approved",
+    fullDate,
     time,
     date,
   };
