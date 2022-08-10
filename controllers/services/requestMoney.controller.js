@@ -7,7 +7,11 @@ const requestCollection = require("../../models/moneyRequests.model");
 const userCollection = require("../../models/users.model");
 const { ObjectId, ObjectID } = require("mongodb");
 
-const date = new Date().toLocaleDateString();
+const fullDate = new Date().toLocaleDateString();
+const date = new Date().toLocaleDateString("en-us", {
+  year: "numeric",
+  month: "short",
+});
 const time = new Date().toLocaleTimeString();
 
 // Request Money
@@ -70,7 +74,8 @@ exports.approveMoneyRequest = async (req, res) => {
     userEmail: requesterEmail,
     name: donorName,
     email: donorEmail,
-    status: "approved",
+    status: "Approved",
+    fullDate,
     time,
     date,
   };
@@ -97,7 +102,7 @@ exports.approveMoneyRequest = async (req, res) => {
   // Updating the money request
   const updatedMoneyRequest = {
     $set: {
-      status: "approved",
+      status: "Approved",
     },
   };
   const moneyRequestFilter = { _id: ObjectId(requestMoneyInfo._id) };
