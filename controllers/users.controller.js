@@ -26,7 +26,6 @@ exports.getUserInfo = async (req, res) => {
   const email = req.headers.email;
   const filter = { email: email };
   const userInfo = await userCollection.findOne(filter);
-  console.log(userInfo)
   res.send(userInfo);
 };
 
@@ -39,8 +38,11 @@ exports.updateUserInfo = async (req, res) => {
       ...updatedUser
     }
   }
-  // console.log(req)
   const userInfo = await userCollection.updateOne(filter, doc, { upsert: true });
-  console.log(req.body)
   res.send(userInfo);
 };
+
+exports.getAllUser = async (req, res) => {
+  const users = await userCollection.find({}).toArray();
+  res.send(users)
+}
