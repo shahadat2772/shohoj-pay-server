@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { addMoney } = require("../controllers/services/addMoney.controller");
 const {
+  getServices,
+} = require("../controllers/services/getServices.controller");
+
+const {
   requestMoney,
   approveMoneyRequest,
   getRequests,
@@ -21,5 +25,7 @@ router.post("/saveMoney", saveMoney);
 router.post("/approveRequestMoney", approveMoneyRequest);
 // Get requests
 router.get("/getRequests", getRequests);
+// Get requests
+router.get("/getServices", getServices);
 
 module.exports = router;
