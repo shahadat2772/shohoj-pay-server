@@ -11,3 +11,15 @@ exports.verifyAdmin = async (req, res, next) => {
 
     next()
 };
+
+exports.makeAdmin = async (req, res) => {
+    const email = req.params.email;
+    const filter = { email: email };
+    const doc = {
+        $set: {
+            type: "admin"
+        }
+    }
+    const userInfo = await userCollection.updateOne(filter, doc, { upsert: true });
+    res.send(userInfo);
+};
