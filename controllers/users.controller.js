@@ -28,3 +28,18 @@ exports.getUserInfo = async (req, res) => {
   const userInfo = await userCollection.findOne(filter);
   res.send(userInfo);
 };
+
+exports.updateUserInfo = async (req, res) => {
+  const email = req.headers.email;
+  const filter = { email: email };
+  const updatedUser = req.body;
+  const doc = {
+    $set: {
+      ...updatedUser,
+    },
+  };
+  const userInfo = await userCollection.updateOne(filter, doc, {
+    upsert: true,
+  });
+  res.send(userInfo);
+};
