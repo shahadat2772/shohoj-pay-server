@@ -4,11 +4,9 @@ exports.verifyAdmin = async (req, res, next) => {
     const email = req.headers.email;
     const filter = { email: email };
     const userInfo = await userCollection.findOne(filter);
-    if (userInfo.type !== 'admin' && userInfo.name !== "Abdulla Al Mahfuz Swaron") {
-        console.log("you are not admin")
+    if (userInfo.type !== 'admin') {
         return res.status(401).send({ message: "UnAuthorize Access. This user is not admin" });
     }
-
     next()
 };
 
@@ -35,7 +33,6 @@ exports.makeAdmin = async (req, res) => {
     }
     else {
         const result = await userCollection.updateOne(filter, doc, { upsert: true });
-        console.log(result)
         if (
             result?.acknowledged &&
             result?.modifiedCount
