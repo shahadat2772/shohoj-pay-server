@@ -35,11 +35,14 @@ exports.updateUserInfo = async (req, res) => {
   const updatedUser = req.body;
   const doc = {
     $set: {
-      ...updatedUser,
-    },
-  };
-  const userInfo = await userCollection.updateOne(filter, doc, {
-    upsert: true,
-  });
+      ...updatedUser
+    }
+  }
+  const userInfo = await userCollection.updateOne(filter, doc, { upsert: true });
   res.send(userInfo);
 };
+
+exports.getAllUser = async (req, res) => {
+  const users = await userCollection.find({}).toArray();
+  res.send(users)
+}
