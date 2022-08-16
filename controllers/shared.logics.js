@@ -5,6 +5,7 @@ const userCollection = require("../models/users.model");
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
 
+// Services
 exports.updateBalance = async (email, amount) => {
   const balanceInfo = await balanceCollection.findOne({ email });
   const lastBalance = parseInt(balanceInfo?.balance);
@@ -53,3 +54,7 @@ exports.getUserInfo = async (email) => {
   const user = await userCollection.findOne({ email });
   return user;
 };
+
+// Admin
+
+// Merchant
