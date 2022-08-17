@@ -1,7 +1,7 @@
 const userCollection = require("../models/users.model");
 const balanceCollection = require("../models/balances.model");
 const savingCollection = require("../models/savings.model");
-
+const jwt = require("jsonwebtoken");
 exports.createAccount = async (req, res) => {
   const { userInfo } = req.body;
   const userResult = await userCollection.insertOne(userInfo);
@@ -16,9 +16,9 @@ exports.createAccount = async (req, res) => {
     email,
     saving: "0",
   };
-
   const balanceResult = await balanceCollection.insertOne(userBalance);
   const savingResult = await savingCollection.insertOne(userSaving);
+  console.log(userInfo)
   res.send(userResult, balanceResult, savingResult);
 };
 
