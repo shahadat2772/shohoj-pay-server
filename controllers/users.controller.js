@@ -1,7 +1,7 @@
 const userCollection = require("../models/users.model");
 const balanceCollection = require("../models/balances.model");
 const savingCollection = require("../models/savings.model");
-
+const jwt = require("jsonwebtoken");
 exports.createAccount = async (req, res) => {
   const { userInfo } = req.body;
   const userResult = await userCollection.insertOne(userInfo);
@@ -16,7 +16,6 @@ exports.createAccount = async (req, res) => {
     email,
     saving: "0",
   };
-
   const balanceResult = await balanceCollection.insertOne(userBalance);
   const savingResult = await savingCollection.insertOne(userSaving);
   res.send(userResult, balanceResult, savingResult);
@@ -45,4 +44,15 @@ exports.updateUserInfo = async (req, res) => {
 exports.getAllUser = async (req, res) => {
   const users = await userCollection.find({}).toArray();
   res.send(users)
+}
+
+exports.emailExists = async (req, res) => {
+  const email = req.params.email;
+  const result = await userCollection.find({ email: email }).toArray();
+  if (result.length) {
+    res.send({ error: "this email is already used" })
+  }
+  else {
+    res.send({ success: "it's available" })
+  }
 }
