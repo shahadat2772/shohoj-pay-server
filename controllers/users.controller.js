@@ -45,3 +45,14 @@ exports.getAllUser = async (req, res) => {
   const users = await userCollection.find({}).toArray();
   res.send(users)
 }
+
+exports.emailExists = async (req, res) => {
+  const email = req.params.email;
+  const result = await userCollection.find({ email: email }).toArray();
+  if (result.length) {
+    res.send({ error: "this email is already used" })
+  }
+  else {
+    res.send({ success: "it's available" })
+  }
+}
