@@ -1,6 +1,7 @@
 const balanceCollection = require("../models/balances.model");
 const savingCollection = require("../models/savings.model");
 const transactionCollection = require("../models/transactions.model");
+const notificationCollection = require("../models/notifications.model");
 const userCollection = require("../models/users.model");
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
@@ -53,6 +54,22 @@ exports.addStatement = async (statement) => {
 exports.getUserInfo = async (email) => {
   const user = await userCollection.findOne({ email });
   return user;
+};
+
+// Notifications
+exports.sendNotification = async (email, message) => {
+  const receiver = userCollection.findOne({ email: email });
+  const avatar = receiver?.avatar;
+  const notification = {
+    message,
+    email,
+    time,
+    date,
+    avatar,
+    status: "unseen",
+  };
+  const sendNotificationResult = notificationCollection.insertOne(notification);
+  return sendNotificationResult;
 };
 
 // Admin

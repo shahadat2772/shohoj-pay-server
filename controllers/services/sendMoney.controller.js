@@ -2,6 +2,7 @@ const {
   getUserInfo,
   updateBalance,
   addStatement,
+  sendNotification,
 } = require("../shared.logics");
 
 const date = new Date().toLocaleDateString();
@@ -60,10 +61,18 @@ exports.sendMoney = async (req, res) => {
   };
   // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
+
+  const notificationMessage = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
+  const sendNotificationResult = await sendNotification(
+    receiversEmail,
+    notificationMessage
+  );
+
   if (
     sendersStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
-    receiversStatementResult?.insertedId
+    receiversStatementResult?.insertedId &&
+    sendNotificationResult.insertedId
   ) {
     res.send({ success: `$${amount} sended success fully.` });
   }
