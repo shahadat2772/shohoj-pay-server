@@ -1,3 +1,5 @@
-const client = require("..");
-const admin = client.db("shohoj-pay").collection("admin");
-module.exports = admin;
+const client = require("../..");
+
+const shohojPay = client.db("shohoj-pay").collection("shohojPay");
+
+module.exports = shohojPay;

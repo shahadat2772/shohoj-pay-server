@@ -5,7 +5,8 @@ exports.addMoney = async (req, res) => {
   const { addMoneyInfo } = req.body;
   const email = addMoneyInfo?.email;
   const amount = parseInt(addMoneyInfo?.amount);
-  const updateBalanceResult = await updateBalance(email, amount);
+  const fee = parseInt(addMoneyInfo?.fee);
+  const updateBalanceResult = await updateBalance(email, amount, fee);
   if (updateBalanceResult.message !== "success") {
     res.send({
       error: "Something went wrong.",
