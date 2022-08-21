@@ -29,6 +29,7 @@ const userSavingsRoute = require("./routes/savings.route");
 const userTransactionRoute = require("./routes/transaction.route");
 const notificationRoute = require("./routes/notification.route");
 const getUserInfo = require("./routes/users.route");
+const adminRoute = require("./routes/admin/admin.route");
 
 async function run() {
   // User Balance routes
@@ -49,6 +50,8 @@ async function run() {
   app.use(stripeRouter);
   // Notification route
   app.use(notificationRoute);
+  // Admin Route
+  app.use(adminRoute);
 
   try {
     await client.connect();
