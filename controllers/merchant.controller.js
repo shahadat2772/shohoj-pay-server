@@ -9,6 +9,6 @@ exports.verifyMerchant = async (req, res, next) => {
       .status(401)
       .send({ message: "UnAuthorize Access. This user is not Merchant" });
   }
-  res.send({ message: "hello merchant saheb!" });
-  // next()
+  // res.send({ message: "hello merchant saheb!" });
+  next()
 };
