@@ -29,7 +29,12 @@ exports.sendMoney = async (req, res) => {
     return;
   }
   const amount = parseInt(sendMoneyInfo?.amount);
-  const updateSendersBalanceResult = await updateBalance(sendersEmail, -amount);
+  const fee = parseInt(sendMoneyInfo?.fee);
+  const updateSendersBalanceResult = await updateBalance(
+    sendersEmail,
+    -amount,
+    fee
+  );
   if (updateSendersBalanceResult.message === "insufficient") {
     res.send({
       error: "Insufficient balance.",

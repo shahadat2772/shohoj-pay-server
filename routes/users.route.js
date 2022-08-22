@@ -6,6 +6,7 @@ const {
   getAllUser,
   emailExists,
 } = require("../controllers/users.controller");
+
 const { verifyAdmin, makeAdmin } = require("../controllers/admin.controller");
 const router = express.Router();
 
