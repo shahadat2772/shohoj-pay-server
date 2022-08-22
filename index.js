@@ -29,6 +29,7 @@ const userSavingsRoute = require("./routes/savings.route");
 const userTransactionRoute = require("./routes/transaction.route");
 const getUserInfo = require("./routes/users.route");
 const adminRoute = require("./routes/admin/admin.route");
+const notificationRoute = require("./routes/notification.route");
 const transactionCollection = require("./models/transactions.model");
 
 async function run() {
