@@ -1,5 +1,6 @@
 const shohojPay = require("../../models/admin/admin.model");
 const userCollection = require("../../models/users.model");
+const { getUserInfo } = require("../shared.logics");
 
 exports.verifyAdmin = async (req, res, next) => {
   const email = req.decoded.email;
@@ -13,41 +14,41 @@ exports.verifyAdmin = async (req, res, next) => {
   next();
 };
 
-exports.makeAdmin = async (req, res) => {
-  const email = req.params.email;
-  const filter = { email: email };
-  const doc = {
-    $set: {
-      type: "admin",
-    },
-  };
-  const user = await userCollection.findOne(filter);
-  if (!user) {
-    res.send({
-      error: "User not found.",
-    });
-    return;
-  } else if (user.type === "admin") {
-    res.send({
-      error: "User is already Admin",
-    });
-    return;
-  } else {
-    const result = await userCollection.updateOne(filter, doc, {
-      upsert: true,
-    });
-    if (result?.acknowledged && result?.modifiedCount) {
-      res.send({ success: `${user.name} is now admin.` });
-    }
-  }
-};
-
 exports.manageAdmin = async (req, res) => {
   const email = req.headers.email;
   const action = req.headers.action;
-
-  console.log(email);
   const filter = { email: email };
+  const doc = {
+    $set: {
+      type: `${action === "add" ? "admin" : "personal"}`,
+    },
+  };
+  const user = await getUserInfo(email);
+  const type = user?.type;
+  if (!user) {
+    res.send({
+      error: "User dose not exists.",
+    });
+    return;
+  }
+  if (type === "admin" && action === "add") {
+    res.send({
+      error: "Already admin.",
+    });
+    return;
+  }
+  const manageAdminResult = await userCollection.updateOne(filter, doc);
+  if (manageAdminResult.matchedCount > 0) {
+    res.send({
+      success: `Successfully ${action === "add" ? "added" : "removed"} admin.`,
+    });
+  }
+};
+
+// Get all admins
+exports.getAllAdmin = async (req, res) => {
+  const admins = await userCollection.find({ type: "admin" }).toArray();
+  res.send(admins);
 };
 
 // Sending info for shoshoj pay admin
