@@ -52,16 +52,13 @@ exports.updateBalance = async (email, amount, fee = 0) => {
 
 exports.updateSaving = async (email, amount) => {
   const savingInfo = await savingCollection.findOne({ email });
-  console.log(savingInfo);
   const lastSaving = parseInt(savingInfo?.saving);
-  console.log("latest-savings", lastSaving);
   const newSaving = (lastSaving + amount).toString();
   if (parseInt(newSaving) < 25) {
     return {
       message: "insufficient",
     };
   }
-  console.log(newSaving);
   const doc = {
     $set: {
       saving: newSaving,

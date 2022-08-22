@@ -1,5 +1,4 @@
 const {
-  getUserInfo,
   updateBalance,
   sendNotification,
   addStatement,
@@ -9,7 +8,6 @@ const {
 // E-Check Money
 exports.withdrawSavings = async (req, res) => {
   const { withdrawInfo } = req?.body;
-  console.log(withdrawInfo);
   const email = withdrawInfo?.email;
   const amount = parseInt(withdrawInfo?.amount);
   const updateSavingsBalanceResult = await updateSaving(email, -amount);
@@ -20,14 +18,17 @@ exports.withdrawSavings = async (req, res) => {
     return;
   }
   const updateUserBalance = await updateBalance(email, amount);
-  console.log(email);
-  //   const eCheckStatement = await addStatement(eCheckInfo);
-  //   const notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
-  //   const sendNotificationResult = await sendNotification(
-  //     to,
-  //     notificationMessage
-  //   );
-  if (updateUserBalance.message == "success") {
+  const withdrawStateMent = await addStatement(withdrawInfo);
+  const notificationMessage = `You have withdrawn amount $${amount} from your savings.`;
+  const sendNotificationResult = await sendNotification(
+    email,
+    notificationMessage
+  );
+  if (
+    updateUserBalance.message == "success" &&
+    withdrawStateMent?.insertedId &&
+    sendNotificationResult.insertedId
+  ) {
     res.send({ success: `$${amount} sended success fully.` });
   }
 };
