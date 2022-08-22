@@ -27,9 +27,9 @@ const stripeRouter = require("./routes/stripe.route");
 const balanceRoute = require("./routes/balance.route");
 const userSavingsRoute = require("./routes/savings.route");
 const userTransactionRoute = require("./routes/transaction.route");
-const notificationRoute = require("./routes/notification.route");
 const getUserInfo = require("./routes/users.route");
 const adminRoute = require("./routes/admin/admin.route");
+const transactionCollection = require("./models/transactions.model");
 
 async function run() {
   // User Balance routes
@@ -42,8 +42,6 @@ async function run() {
   app.use(userTransactionRoute);
   // User management routes
   app.use(userRouter);
-  // Services routes
-  app.use(servicesRoutes);
   // Services routes
   app.use(servicesRoutes);
   // Stripe router

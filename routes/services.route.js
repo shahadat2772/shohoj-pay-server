@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { addMoney } = require("../controllers/services/addMoney.controller");
+const { eCheckInfo } = require("../controllers/services/eCheck.controller");
 const {
   getServices,
 } = require("../controllers/services/getServices.controller");
@@ -23,6 +24,8 @@ router.post("/requestMoney", requestMoney);
 router.post("/saveMoney", saveMoney);
 // Approve money request
 router.post("/approveRequestMoney", approveMoneyRequest);
+// E-check
+router.post("/eCheck", eCheckInfo);
 // Get requests
 router.get("/getRequests", getRequests);
 // Get requests
