@@ -27,6 +27,7 @@ const stripeRouter = require("./routes/stripe.route");
 const balanceRoute = require("./routes/balance.route");
 const userSavingsRoute = require("./routes/savings.route");
 const userTransactionRoute = require("./routes/transaction.route");
+const userAllEmailInfo = require("./routes/userAllEmailInfo.route");
 const getUserInfo = require("./routes/users.route");
 const adminRoute = require("./routes/admin/admin.route");
 const notificationRoute = require("./routes/notification.route");
@@ -42,6 +43,8 @@ async function run() {
   app.use(jwtUserRoute);
   // USER TRANSACTION STATUS
   app.use(userTransactionRoute);
+  // GET USER ALL EMAIL INFO
+  app.use(userAllEmailInfo);
   // User management routes
   app.use(userRouter);
   // Services routes

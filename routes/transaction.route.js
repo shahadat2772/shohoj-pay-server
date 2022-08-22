@@ -3,6 +3,7 @@ const { verifyJWT } = require("../controllers/jwt.controller");
 const {
   getTransactionStatus,
   getSavings,
+  userAllInfo,
 } = require("../controllers/transaction.controller");
 const router = express.Router();
 

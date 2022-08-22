@@ -29,6 +29,6 @@ exports.withdrawSavings = async (req, res) => {
     withdrawStateMent?.insertedId &&
     sendNotificationResult.insertedId
   ) {
-    res.send({ success: `$${amount} sended success fully.` });
+    res.send({ success: `$${amount} Withdraw success fully.` });
   }
 };
