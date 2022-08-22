@@ -7,13 +7,14 @@ const {
   emailExists,
 } = require("../controllers/users.controller");
 
-const { verifyMerchant } = require("../controllers/merchant.controller");
+const { verifyAdmin, makeAdmin } = require("../controllers/admin.controller");
 const router = express.Router();
 
 router.post("/createAccount", createAccount);
 router.get("/getUserInfo", getUserInfo);
-router.put("/updateUserInfo", updateUserInfo);
-router.get("/checkmerchant", verifyMerchant);
+router.get("/getalluser", verifyAdmin, getAllUser)
+router.put("/updateUserInfo", updateUserInfo)
+router.put("/makeadmin/:email", verifyAdmin, makeAdmin);
 router.get("/checkemailexists/:email", emailExists);
 
 module.exports = router;
