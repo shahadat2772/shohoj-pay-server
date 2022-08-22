@@ -34,25 +34,26 @@ exports.updateUserInfo = async (req, res) => {
   const updatedUser = req.body;
   const doc = {
     $set: {
-      ...updatedUser
-    }
-  }
-  const userInfo = await userCollection.updateOne(filter, doc, { upsert: true });
+      ...updatedUser,
+    },
+  };
+  const userInfo = await userCollection.updateOne(filter, doc, {
+    upsert: true,
+  });
   res.send(userInfo);
 };
 
 exports.getAllUser = async (req, res) => {
   const users = await userCollection.find({}).toArray();
-  res.send(users)
-}
+  res.send(users);
+};
 
 exports.emailExists = async (req, res) => {
   const email = req.params.email;
   const result = await userCollection.find({ email: email }).toArray();
   if (result.length) {
-    res.send({ error: "this email is already used" })
+    res.send({ error: "this email is already used" });
+  } else {
+    res.send({ success: "it's available" });
   }
-  else {
-    res.send({ success: "it's available" })
-  }
-}
+};

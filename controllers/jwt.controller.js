@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const jwtUserCollection = require("../models/jwt.modal");
 
 // VERIFY USER ON JOTtOKEN
 exports.verifyJWT = (req, res, next) => {
