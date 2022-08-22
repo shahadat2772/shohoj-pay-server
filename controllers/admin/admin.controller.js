@@ -1,8 +1,9 @@
 const shohojPay = require("../../models/admin/admin.model");
 const userCollection = require("../../models/users.model");
+const { getUserInfo } = require("../shared.logics");
 
 exports.verifyAdmin = async (req, res, next) => {
-  const email = req.headers.email;
+  const email = req.decoded.email;
   const filter = { email: email };
   const userInfo = await userCollection.findOne(filter);
   if (userInfo.type !== "admin") {
@@ -13,33 +14,41 @@ exports.verifyAdmin = async (req, res, next) => {
   next();
 };
 
-exports.makeAdmin = async (req, res) => {
-  const email = req.params.email;
+exports.manageAdmin = async (req, res) => {
+  const email = req.headers.email;
+  const action = req.headers.action;
   const filter = { email: email };
   const doc = {
     $set: {
-      type: "admin",
+      type: `${action === "add" ? "admin" : "personal"}`,
     },
   };
-  const user = await userCollection.findOne(filter);
+  const user = await getUserInfo(email);
+  const type = user?.type;
   if (!user) {
     res.send({
-      error: "User not found.",
+      error: "User dose not exists.",
     });
     return;
-  } else if (user.type === "admin") {
-    res.send({
-      error: "User is already Admin",
-    });
-    return;
-  } else {
-    const result = await userCollection.updateOne(filter, doc, {
-      upsert: true,
-    });
-    if (result?.acknowledged && result?.modifiedCount) {
-      res.send({ success: `${user.name} is now admin.` });
-    }
   }
+  if (type === "admin" && action === "add") {
+    res.send({
+      error: "Already admin.",
+    });
+    return;
+  }
+  const manageAdminResult = await userCollection.updateOne(filter, doc);
+  if (manageAdminResult.matchedCount > 0) {
+    res.send({
+      success: `Successfully ${action === "add" ? "added" : "removed"} admin.`,
+    });
+  }
+};
+
+// Get all admins
+exports.getAllAdmin = async (req, res) => {
+  const admins = await userCollection.find({ type: "admin" }).toArray();
+  res.send(admins);
 };
 
 // Sending info for shoshoj pay admin
