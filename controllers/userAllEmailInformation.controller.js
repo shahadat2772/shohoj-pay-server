@@ -1,18 +1,13 @@
+const balanceCollection = require("../models/balances.model");
 const savingCollection = require("../models/savings.model");
 const transactionCollection = require("../models/transactions.model");
-
-exports.getTransactionStatus = async (req, res) => {
+exports.userAllInfo = async (req, res) => {
   const email = req.params.email;
   const filter = { email: email };
+  const userBalance = await balanceCollection.findOne(filter);
   const userTransactionInfo = await transactionCollection
     .find(filter)
     .toArray();
-  //   const userSavingsInfo = await transactionCollection.find().toArray();
-  res.send(userTransactionInfo);
-};
-exports.getSavings = async (req, res) => {
-  const email = req.params.email;
-  const filter = { email: email };
   const userSavingsInfo = await savingCollection.findOne(filter);
-  res.send(userSavingsInfo);
+  res.send({ userBalance, userTransactionInfo, userSavingsInfo });
 };

@@ -8,7 +8,6 @@ const {
 // E-Check Money
 exports.eCheckInfo = async (req, res) => {
   const { eCheckInfo } = req?.body;
-  console.log(eCheckInfo);
   const from = eCheckInfo?.from;
   const to = eCheckInfo?.to;
   const issuerInfo = await getUserInfo(to);
@@ -19,14 +18,12 @@ exports.eCheckInfo = async (req, res) => {
     return;
   }
   const amount = parseInt(eCheckInfo?.amount);
-  const updateSendersBalanceResult = await updateBalance(from, -amount);
   if (updateSendersBalanceResult.message === "insufficient") {
     res.send({
       error: "Insufficient balance.",
     });
     return;
   }
-  console.log(to);
   const eCheckStatement = await addStatement(eCheckInfo);
   const notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
   const sendNotificationResult = await sendNotification(
