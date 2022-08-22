@@ -19,7 +19,6 @@ exports.eCheckInfo = async (req, res) => {
     return;
   }
   const amount = parseInt(eCheckInfo?.amount);
-  const updateSendersBalanceResult = await updateBalance(from, -amount);
   if (updateSendersBalanceResult.message === "insufficient") {
     res.send({
       error: "Insufficient balance.",

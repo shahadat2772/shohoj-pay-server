@@ -31,6 +31,7 @@ const getUserInfo = require("./routes/users.route");
 const adminRoute = require("./routes/admin/admin.route");
 const notificationRoute = require("./routes/notification.route");
 const transactionCollection = require("./models/transactions.model");
+const savingCollection = require("./models/savings.model");
 
 async function run() {
   // User Balance routes
@@ -51,7 +52,6 @@ async function run() {
   app.use(notificationRoute);
   // Admin Route
   app.use(adminRoute);
-
   try {
     await client.connect();
   } finally {

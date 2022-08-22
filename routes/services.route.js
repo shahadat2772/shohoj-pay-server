@@ -13,6 +13,9 @@ const {
 } = require("../controllers/services/requestMoney.controller");
 const { saveMoney } = require("../controllers/services/saveMoney.controller");
 const { sendMoney } = require("../controllers/services/sendMoney.controller");
+const {
+  withdrawSavings,
+} = require("../controllers/services/withdrawSavings.controller");
 
 // Add Money
 router.post("/addMoney", addMoney);
@@ -26,6 +29,8 @@ router.post("/saveMoney", saveMoney);
 router.post("/approveRequestMoney", approveMoneyRequest);
 // E-check
 router.post("/eCheck", eCheckInfo);
+// WITHDRAW SAVINGS
+router.post("/withdraw-savings", withdrawSavings);
 // Get requests
 router.get("/getRequests", getRequests);
 // Get requests
