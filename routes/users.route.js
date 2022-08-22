@@ -7,8 +7,6 @@ const {
   emailExists,
 } = require("../controllers/users.controller");
 const { verifyAdmin, makeAdmin } = require("../controllers/admin.controller");
-const { verifyMerchant } = require("../controllers/merchant.controller");
-const { verifyJWT } = require("../controllers/jwt.controller");
 const router = express.Router();
 
 router.post("/createAccount", createAccount);
