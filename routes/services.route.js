@@ -1,4 +1,5 @@
 const express = require("express");
+const { verifyJWT } = require("../controllers/jwt.controller");
 const { verifyMerchant } = require("../controllers/merchant.controller");
 const router = express.Router();
 const { addMoney } = require("../controllers/services/addMoney.controller");
@@ -36,6 +37,6 @@ router.get("/getServices", getServices);
 // Merchant Services Routes
 
 // Merchant to Personal
-router.post("/merchant-to-personal", verifyMerchant, mechantToPersonal)
+router.post("/merchant-to-personal", verifyJWT, verifyMerchant, mechantToPersonal)
 
 module.exports = router;
