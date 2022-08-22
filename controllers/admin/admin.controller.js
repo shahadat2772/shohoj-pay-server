@@ -1,3 +1,4 @@
+const shohojPay = require("../../models/admin/admin.model");
 const userCollection = require("../../models/users.model");
 
 exports.verifyAdmin = async (req, res, next) => {
@@ -39,4 +40,10 @@ exports.makeAdmin = async (req, res) => {
       res.send({ success: `${user.name} is now admin.` });
     }
   }
+};
+
+// Sending info for shoshoj pay admin
+exports.getShohojPayInfo = async (req, res) => {
+  const shoshoPayInfoResult = await shohojPay.findOne({ id: "shohojPay" });
+  res.send(shoshoPayInfoResult);
 };
