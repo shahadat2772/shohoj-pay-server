@@ -63,5 +63,19 @@ exports.getShohojPayInfo = async (req, res) => {
 exports.updateAccountStatus = async (req, res) => {
   const email = req.headers.email;
   const action = req.headers.action;
-  console.log(email, action);
+  const doc = {
+    $set: {
+      status: action,
+    },
+  };
+  const statusUpdateResult = await userCollection.updateOne({ email }, doc);
+  if (statusUpdateResult.matchedCount > 0) {
+    res.send({
+      success: `Account successfully ${action}`,
+    });
+  } else {
+    res.send({
+      error: "Something went wrong.",
+    });
+  }
 };
