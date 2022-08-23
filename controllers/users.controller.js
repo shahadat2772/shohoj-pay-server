@@ -43,11 +43,6 @@ exports.updateUserInfo = async (req, res) => {
   res.send(userInfo);
 };
 
-exports.getAllUser = async (req, res) => {
-  const users = await userCollection.find({}).toArray();
-  res.send(users);
-};
-
 exports.emailExists = async (req, res) => {
   const email = req.params.email;
   const result = await userCollection.find({ email: email }).toArray();

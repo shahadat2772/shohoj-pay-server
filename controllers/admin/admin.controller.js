@@ -45,14 +45,37 @@ exports.manageAdmin = async (req, res) => {
   }
 };
 
-// Get all admins
 exports.getAllAdmin = async (req, res) => {
   const admins = await userCollection.find({ type: "admin" }).toArray();
   res.send(admins);
 };
 
-// Sending info for shoshoj pay admin
+exports.getAllUser = async (req, res) => {
+  const users = await userCollection.find({}).toArray();
+  res.send(users);
+};
+
 exports.getShohojPayInfo = async (req, res) => {
   const shoshoPayInfoResult = await shohojPay.findOne({ id: "shohojPay" });
   res.send(shoshoPayInfoResult);
+};
+
+exports.updateAccountStatus = async (req, res) => {
+  const email = req.headers.email;
+  const action = req.headers.action;
+  const doc = {
+    $set: {
+      status: action,
+    },
+  };
+  const statusUpdateResult = await userCollection.updateOne({ email }, doc);
+  if (statusUpdateResult.matchedCount > 0) {
+    res.send({
+      success: `Account successfully ${action}`,
+    });
+  } else {
+    res.send({
+      error: "Something went wrong.",
+    });
+  }
 };
