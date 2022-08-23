@@ -27,6 +27,11 @@ exports.sendMoney = async (req, res) => {
       error: "Receiver not found.",
     });
     return;
+  } else if (receiversInfo.type !== "personal") {
+    res.send({
+      error: "Receiver is not a Personal user",
+    });
+    return;
   }
   const amount = parseInt(sendMoneyInfo?.amount);
   const fee = parseInt(sendMoneyInfo?.fee);
