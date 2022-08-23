@@ -26,7 +26,7 @@ exports.personalToMerchant = async (req, res) => {
     return;
   } else if (receiversInfo.type !== "merchant") {
     res.send({
-      error: "Reciever is not a Merchant user",
+      error: "Receiver is not a Merchant user",
     });
     return;
   }
