@@ -7,6 +7,7 @@ const { eCheckInfo } = require("../controllers/services/eCheck.controller");
 const {
   getServices,
 } = require("../controllers/services/getServices.controller");
+
 const { merchantToMerchant } = require("../controllers/services/merchantToMerchant.controller");
 const {
   mechantToPersonal,
