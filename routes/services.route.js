@@ -7,6 +7,7 @@ const { eCheckInfo } = require("../controllers/services/eCheck.controller");
 const {
   getServices,
 } = require("../controllers/services/getServices.controller");
+const { merchantToMerchant } = require("../controllers/services/merchantToMerchant.controller");
 const {
   mechantToPersonal,
 } = require("../controllers/services/merchantToPersonal.controller");
@@ -54,6 +55,17 @@ router.post(
   mechantToPersonal
 );
 // Personal to Merchant
-router.post("/personal-to-merchant", personalToMerchant);
+router.post("/personal-to-merchant",
+  verifyJWT,
+  verifyMerchant,
+  personalToMerchant
+);
+
+// merchant to merchant
+router.post("/merchant-to-merchant",
+  verifyJWT,
+  verifyMerchant,
+  merchantToMerchant
+)
 
 module.exports = router;
