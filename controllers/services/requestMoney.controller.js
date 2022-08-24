@@ -60,7 +60,9 @@ exports.approveMoneyRequest = async (req, res) => {
   const donorEmail = requestMoneyInfo?.to;
 
   const amount = parseInt(requestMoneyInfo?.amount);
-  const fee = parseInt(requestMoneyInfo?.fee);
+  let fee = 0
+  const requesterInfo = await getUserInfo(donorEmail);
+  if (requesterInfo.type === "merchant") fee = 5
   // Adding statement and updating balance for donor
   const donorsBalanceUpdate = await updateBalance(donorEmail, -amount, fee);
   if (donorsBalanceUpdate.message === "insufficient") {
