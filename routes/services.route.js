@@ -62,12 +62,7 @@ router.post(
   mechantToPersonal
 );
 // Personal to Merchant
-router.post(
-  "/personal-to-merchant",
-  verifyJWT,
-  verifyMerchant,
-  personalToMerchant
-);
+router.post("/personal-to-merchant", personalToMerchant);
 
 // merchant to merchant
 router.post(
