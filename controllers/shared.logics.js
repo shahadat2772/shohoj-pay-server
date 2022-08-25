@@ -12,8 +12,8 @@ const time = new Date().toLocaleTimeString();
 exports.updateBalance = async (email, amount, fee = 0) => {
   const balanceInfo = await balanceCollection.findOne({ email });
   const lastBalance = parseInt(balanceInfo?.balance);
-  const newBalance = (lastBalance + amount - fee).toString();
-  if (parseInt(newBalance) < 25) {
+  const newBalance = (lastBalance + amount + fee).toString();
+  if (parseInt(newBalance) < 0) {
     return {
       message: "insufficient",
     };
@@ -54,7 +54,7 @@ exports.updateSaving = async (email, amount) => {
   const savingInfo = await savingCollection.findOne({ email });
   const lastSaving = parseInt(savingInfo?.saving);
   const newSaving = (lastSaving + amount).toString();
-  if (parseInt(newSaving) < 25) {
+  if (parseInt(newSaving) < 0) {
     return {
       message: "insufficient",
     };

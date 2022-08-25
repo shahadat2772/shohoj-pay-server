@@ -11,3 +11,11 @@ exports.userAllInfo = async (req, res) => {
   const userSavingsInfo = await savingCollection.findOne(filter);
   res.send({ userBalance, userTransactionInfo, userSavingsInfo });
 };
+exports.getAllTransaction = async (req, res) => {
+  const email = req.params.email;
+  const filter = { email: email };
+  const userTransactionInfo = await transactionCollection
+    .find(filter)
+    .toArray();
+  res.send(userTransactionInfo);
+};
