@@ -18,7 +18,7 @@ exports.createAccount = async (req, res) => {
   };
   const balanceResult = await balanceCollection.insertOne(userBalance);
   const savingResult = await savingCollection.insertOne(userSaving);
-  res.send(userResult, balanceResult, savingResult);
+  res.send({ userResult, balanceResult, savingResult });
 };
 
 exports.getUserInfo = async (req, res) => {
@@ -47,7 +47,7 @@ exports.emailExists = async (req, res) => {
   const email = req.params.email;
   const result = await userCollection.find({ email: email }).toArray();
   if (result.length) {
-    res.send({ error: "this email is already used" });
+    res.send({ error: "This email is already in use." });
   } else {
     res.send({ success: "it's available" });
   }

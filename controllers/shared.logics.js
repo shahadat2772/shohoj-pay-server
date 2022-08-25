@@ -12,7 +12,7 @@ const time = new Date().toLocaleTimeString();
 exports.updateBalance = async (email, amount, fee = 0) => {
   const balanceInfo = await balanceCollection.findOne({ email });
   const lastBalance = parseInt(balanceInfo?.balance);
-  const newBalance = (lastBalance + amount + fee).toString();
+  const newBalance = (lastBalance + amount - fee).toString();
   if (parseInt(newBalance) < 25) {
     return {
       message: "insufficient",

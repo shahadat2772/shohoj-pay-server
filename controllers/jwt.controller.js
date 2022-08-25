@@ -15,18 +15,28 @@ exports.verifyJWT = async (req, res, next) => {
       if (err) {
         return res.status(403).send({ message: "Forbidden Access" });
       }
+      const userInfo = await getUserInfo(decoded);
+      if (!userInfo?.status === "active") {
+        return res.status(403).send({
+          error: "Your account was deactivated, contact us to know more.",
+        });
+      }
       req.decoded = decoded;
-
-      // const userInfo = await getUserInfo(decoded);
-      console.log("userInfo");
-
-      next();
     }
   );
+
+  next();
 };
 
 exports.getJwtToken = async (req, res) => {
   const email = req.params.email;
+  const userInfo = await getUserInfo(email);
+  if (!userInfo?.status === "active") {
+    res.status(403).send({
+      error: "Your account was deactivated, contact us to know more.",
+    });
+    return;
+  }
   const token = jwt.sign({ email: email }, process.env.JWT_SECRET_TOKEN, {
     expiresIn: "24h",
   });
