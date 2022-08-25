@@ -22,10 +22,9 @@ exports.verifyJWT = async (req, res, next) => {
         });
       }
       req.decoded = decoded;
+      next();
     }
   );
-
-  next();
 };
 
 exports.getJwtToken = async (req, res) => {
