@@ -11,3 +11,12 @@ exports.getServices = async (req, res) => {
   const services = await transactionCollection.find(query).toArray();
   res.send(services);
 };
+exports.getAllService = async (req, res) => {
+  const date = req.headers?.monthservicefilter;
+
+  const query = {
+    date: date,
+  };
+  const services = await transactionCollection.find(query).toArray();
+  res.send(services);
+};
