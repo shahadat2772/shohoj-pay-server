@@ -70,8 +70,7 @@ router.post(
 );
 
 // merchant to merchant
-router.post(
-  "/merchant-to-merchant",
+router.post("/merchant-to-merchant",
   verifyJWT,
   verifyMerchant,
   merchantToMerchant
