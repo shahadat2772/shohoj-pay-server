@@ -47,7 +47,7 @@ router.post("/eCheck", eCheckInfo);
 router.post("/withdraw-savings", withdrawSavings);
 // Get requests
 router.get("/getRequests", getRequests);
-// Get services
+// Get UserService
 router.get("/getServices", getServices);
 // Get All Service
 router.get("/all-service", getAllService);
@@ -62,14 +62,11 @@ router.post(
   mechantToPersonal
 );
 // Personal to Merchant
-router.post("/personal-to-merchant",
-  verifyJWT,
-  verifyMerchant,
-  personalToMerchant
-);
+router.post("/personal-to-merchant", personalToMerchant);
 
 // merchant to merchant
-router.post("/merchant-to-merchant",
+router.post(
+  "/merchant-to-merchant",
   verifyJWT,
   verifyMerchant,
   merchantToMerchant
