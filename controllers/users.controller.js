@@ -18,7 +18,7 @@ exports.createAccount = async (req, res) => {
   };
   const balanceResult = await balanceCollection.insertOne(userBalance);
   const savingResult = await savingCollection.insertOne(userSaving);
-  res.send(userResult, balanceResult, savingResult);
+  res.send({ userResult, balanceResult, savingResult });
 };
 
 exports.getUserInfo = async (req, res) => {
