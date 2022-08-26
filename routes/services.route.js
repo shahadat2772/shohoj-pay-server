@@ -3,6 +3,7 @@ const { verifyJWT } = require("../controllers/jwt.controller");
 const { verifyMerchant } = require("../controllers/merchant.controller");
 const router = express.Router();
 const { addMoney } = require("../controllers/services/addMoney.controller");
+const { requestBusinessLoan } = require("../controllers/services/businessLoan.controller");
 const { eCheckInfo } = require("../controllers/services/eCheck.controller");
 const {
   getServices,
@@ -70,5 +71,12 @@ router.post(
   verifyMerchant,
   merchantToMerchant
 );
+
+// business loan
+router.post("/request-business-loan",
+  verifyJWT,
+  verifyMerchant,
+  requestBusinessLoan
+)
 
 module.exports = router;

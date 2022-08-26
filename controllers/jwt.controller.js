@@ -16,10 +16,6 @@ exports.verifyJWT = async (req, res, next) => {
         return res.status(403).send({ message: "Forbidden Access" });
       }
       req.decoded = decoded;
-
-      // const userInfo = await getUserInfo(decoded);
-      console.log("userInfo");
-
       next();
     }
   );
