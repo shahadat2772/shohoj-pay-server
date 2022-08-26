@@ -3,12 +3,16 @@ const { verifyJWT } = require("../controllers/jwt.controller");
 const { verifyMerchant } = require("../controllers/merchant.controller");
 const router = express.Router();
 const { addMoney } = require("../controllers/services/addMoney.controller");
+const { requestBusinessLoan } = require("../controllers/services/businessLoan.controller");
 const { eCheckInfo } = require("../controllers/services/eCheck.controller");
 const {
   getServices,
+  getAllService,
 } = require("../controllers/services/getServices.controller");
 
-const { merchantToMerchant } = require("../controllers/services/merchantToMerchant.controller");
+const {
+  merchantToMerchant,
+} = require("../controllers/services/merchantToMerchant.controller");
 const {
   mechantToPersonal,
 } = require("../controllers/services/merchantToPersonal.controller");
@@ -43,8 +47,10 @@ router.post("/eCheck", eCheckInfo);
 router.post("/withdraw-savings", withdrawSavings);
 // Get requests
 router.get("/getRequests", getRequests);
-// Get requests
+// Get UserService
 router.get("/getServices", getServices);
+// Get All Service
+router.get("/all-service", getAllService);
 
 // Merchant Services Routes
 
@@ -56,17 +62,21 @@ router.post(
   mechantToPersonal
 );
 // Personal to Merchant
-router.post("/personal-to-merchant",
-  verifyJWT,
-  verifyMerchant,
-  personalToMerchant
-);
+router.post("/personal-to-merchant", personalToMerchant);
 
 // merchant to merchant
-router.post("/merchant-to-merchant",
+router.post(
+  "/merchant-to-merchant",
   verifyJWT,
   verifyMerchant,
   merchantToMerchant
+);
+
+// business loan
+router.post("/request-business-loan",
+  verifyJWT,
+  verifyMerchant,
+  requestBusinessLoan
 )
 
 module.exports = router;

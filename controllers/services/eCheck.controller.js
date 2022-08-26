@@ -26,12 +26,15 @@ exports.eCheckInfo = async (req, res) => {
     return;
   }
   const eCheckStatement = await addStatement(eCheckInfo);
-  const notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
+  let notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
+  if (to === from) {
+    notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from yourself.`;
+  }
   const sendNotificationResult = await sendNotification(
     to,
     notificationMessage
   );
   if (eCheckStatement?.insertedId && sendNotificationResult.insertedId) {
-    res.send({ success: `$${amount} sended success fully.` });
+    res.send({ success: `$${amount} issued success fully.` });
   }
 };
