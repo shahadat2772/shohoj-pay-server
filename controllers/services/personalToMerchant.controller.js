@@ -10,6 +10,7 @@ exports.personalToMerchant = async (req, res) => {
   const senderEmail = merchantPayInfo?.from;
   const receiversEmail = merchantPayInfo?.to;
   const amount = parseInt(merchantPayInfo?.amount);
+  const fee = Number((amount * 0.01).toFixed(2));
 
   if (senderEmail === receiversEmail) {
     res.send({
@@ -30,7 +31,11 @@ exports.personalToMerchant = async (req, res) => {
     });
     return;
   }
-  const updateSendersUserBalance = await updateBalance(senderEmail, -amount);
+  const updateSendersUserBalance = await updateBalance(
+    senderEmail,
+    -amount,
+    fee
+  );
   if (updateSendersUserBalance.message === "insufficient") {
     res.send({
       error: "Insufficient balance.",

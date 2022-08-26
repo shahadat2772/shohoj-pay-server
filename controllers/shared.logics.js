@@ -11,8 +11,8 @@ const time = new Date().toLocaleTimeString();
 // Services
 exports.updateBalance = async (email, amount, fee = 0) => {
   const balanceInfo = await balanceCollection.findOne({ email });
-  const lastBalance = parseInt(balanceInfo?.balance);
-  const newBalance = (lastBalance + amount + fee).toString();
+  const lastBalance = Number(balanceInfo?.balance);
+  const newBalance = (lastBalance + amount - fee).toString();
   if (parseInt(newBalance) < 0) {
     return {
       message: "insufficient",
@@ -20,7 +20,7 @@ exports.updateBalance = async (email, amount, fee = 0) => {
   }
   if (fee > 0) {
     const { revenue } = await shohojPay.findOne({ id: "shohojPay" });
-    const newRevenue = parseInt(revenue) + fee;
+    const newRevenue = Number(revenue) + fee;
     const uDoc = {
       $set: {
         revenue: newRevenue.toString(),
