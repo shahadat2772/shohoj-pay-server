@@ -1,4 +1,8 @@
-const { updateBalance, addStatement } = require("../shared.logics");
+const {
+  updateBalance,
+  addStatement,
+  sendNotification,
+} = require("../shared.logics");
 
 // ADD MONEY
 exports.addMoney = async (req, res) => {
@@ -12,11 +16,18 @@ exports.addMoney = async (req, res) => {
     });
     return;
   }
+  // NOTIFICATION
+  let notificationMessage = ` $${amount} has been added to you account`;
+  const sendNotificationResult = await sendNotification(
+    email,
+    notificationMessage
+  );
   // console.log("Add Money statement", addMoneyInfo);
   const addMoneyStatementResult = await addStatement(addMoneyInfo);
   if (
+    updateBalanceResult.message === "success" &&
     addMoneyStatementResult.insertedId &&
-    updateBalanceResult.message === "success"
+    sendNotificationResult.insertedId
   ) {
     res.send({
       success: `$${amount} added successfully`,
