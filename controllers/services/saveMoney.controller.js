@@ -4,8 +4,8 @@ const {
   addStatement,
 } = require("../shared.logics");
 
-const date = new Date().toLocaleDateString();
-const time = new Date().toLocaleTimeString();
+const saveMoneyImage =
+  "https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png";
 
 // Save Money
 exports.saveMoney = async (req, res) => {
@@ -21,7 +21,11 @@ exports.saveMoney = async (req, res) => {
   }
   const updateSavingResult = await updateSaving(email, amount);
   console.log("Save money statement", saveMoneyInfo);
-  const savingStatementResult = await addStatement(saveMoneyInfo);
+  const saveMoneyStateMent = {
+    ...saveMoneyInfo,
+    image: saveMoneyImage,
+  };
+  const savingStatementResult = await addStatement(saveMoneyStateMent);
   if (
     updateBalanceResult.message == "success" &&
     updateSavingResult.modifiedCount > 0 &&

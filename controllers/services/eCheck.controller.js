@@ -4,6 +4,7 @@ const {
   sendNotification,
   addStatement,
 } = require("../shared.logics");
+const { v4: uuidv4 } = require("uuid");
 
 // E-Check Money
 exports.eCheckInfo = async (req, res) => {
@@ -11,6 +12,7 @@ exports.eCheckInfo = async (req, res) => {
   const from = eCheckInfo?.from;
   const to = eCheckInfo?.to;
   const issuerInfo = await getUserInfo(to);
+  const issuerImage = issuerInfo?.avatar;
   if (!issuerInfo) {
     res.send({
       error: "Issuer not found.",
@@ -25,13 +27,21 @@ exports.eCheckInfo = async (req, res) => {
     });
     return;
   }
-  const eCheckStatement = await addStatement(eCheckInfo);
-  const notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
+  const eCheckStateMent = {
+    ...eCheckInfo,
+    serialNumber: uuidv4(),
+    image: issuerImage,
+  };
+  const eCheckStatement = await addStatement(eCheckStateMent);
+  let notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
+  if (to === from) {
+    notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from yourself.`;
+  }
   const sendNotificationResult = await sendNotification(
     to,
     notificationMessage
   );
   if (eCheckStatement?.insertedId && sendNotificationResult.insertedId) {
-    res.send({ success: `$${amount} sended success fully.` });
+    res.send({ success: `$${amount} issued success fully.` });
   }
 };
