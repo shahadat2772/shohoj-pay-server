@@ -5,9 +5,6 @@ const {
   sendNotification,
 } = require("../shared.logics");
 
-const date = new Date().toLocaleDateString();
-const time = new Date().toLocaleTimeString();
-
 // SEND MONEY
 exports.sendMoney = async (req, res) => {
   const { sendMoneyInfo } = req?.body;
@@ -22,6 +19,7 @@ exports.sendMoney = async (req, res) => {
   }
 
   const receiversInfo = await getUserInfo(receiversEmail);
+  const receiverImage = receiversInfo?.avatar;
   if (!receiversInfo) {
     res.send({
       error: "Receiver not found.",
@@ -53,6 +51,7 @@ exports.sendMoney = async (req, res) => {
     ...sendMoneyInfo,
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
+    image: receiverImage,
   };
   // console.log("Senders Statement", sendersStatement);
   const sendersStatementResult = await addStatement(sendersStatement);
@@ -72,18 +71,25 @@ exports.sendMoney = async (req, res) => {
   };
   // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
-
-  const notificationMessage = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
-  const sendNotificationResult = await sendNotification(
+  // RECEIVER NOTIFICATION
+  const receiverNotification = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
+  const receiverNotificationResult = await sendNotification(
     receiversEmail,
-    notificationMessage
+    receiverNotification
+  );
+  // SENDER NOTIFICATION
+  const senderNotification = `You have successfully send money of $${sendMoneyInfo.amount}, to ${sendersEmail}.`;
+  const senderNotificationResult = await sendNotification(
+    sendersEmail,
+    senderNotification
   );
 
   if (
     sendersStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
     receiversStatementResult?.insertedId &&
-    sendNotificationResult.insertedId
+    receiverNotificationResult.insertedId &&
+    senderNotificationResult.insertedId
   ) {
     res.send({ success: `$${amount} sended success fully.` });
   }
