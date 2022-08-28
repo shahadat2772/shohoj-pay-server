@@ -20,6 +20,7 @@ exports.personalToMerchant = async (req, res) => {
   }
 
   const receiversInfo = await getUserInfo(receiversEmail);
+  const receiversImage = receiversInfo?.avatar;
   if (!receiversInfo) {
     res.send({
       error: "Receiver not found.",
@@ -47,6 +48,7 @@ exports.personalToMerchant = async (req, res) => {
     ...merchantPayInfo,
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
+    image: receiversImage,
   };
   const senderStatementResult = await addStatement(sendersStateMent);
   const updateReceiversBalanceResult = await updateBalance(

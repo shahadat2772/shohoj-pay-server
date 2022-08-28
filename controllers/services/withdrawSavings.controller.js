@@ -5,6 +5,8 @@ const {
   updateSaving,
 } = require("../shared.logics");
 
+const withdrawImage =
+  "https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png";
 // E-Check Money
 exports.withdrawSavings = async (req, res) => {
   const { withdrawInfo } = req?.body;
@@ -18,7 +20,11 @@ exports.withdrawSavings = async (req, res) => {
     return;
   }
   const updateUserBalance = await updateBalance(email, amount);
-  const withdrawStateMent = await addStatement(withdrawInfo);
+  const withdrawStateMentInfo = {
+    ...withdrawInfo,
+    image: withdrawImage,
+  };
+  const withdrawStateMent = await addStatement(withdrawStateMentInfo);
   const notificationMessage = `You have withdrawn amount $${amount} from your savings.`;
   const sendNotificationResult = await sendNotification(
     email,
