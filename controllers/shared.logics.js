@@ -23,7 +23,7 @@ exports.updateBalance = async (email, amount, fee = 0) => {
     const newRevenue = Number(revenue) + fee;
     const uDoc = {
       $set: {
-        revenue: newRevenue.toString(),
+        revenue: newRevenue.toFixed(2).toString(),
       },
     };
     const cutFeeResult = await shohojPay.updateOne({ id: "shohojPay" }, uDoc);
