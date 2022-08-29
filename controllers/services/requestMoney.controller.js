@@ -75,6 +75,7 @@ exports.approveMoneyRequest = async (req, res) => {
   }
   const donorStatement = {
     ...requestMoneyInfo,
+    type: "Request Money",
     userName: requesterName,
     userEmail: requesterEmail,
     name: donorName,
@@ -83,6 +84,7 @@ exports.approveMoneyRequest = async (req, res) => {
     fullDate,
     time,
     date,
+    fee: fee.toString(),
   };
   delete donorStatement.requesterName;
   delete donorStatement.donorName;
@@ -100,6 +102,7 @@ exports.approveMoneyRequest = async (req, res) => {
     userName: donorName,
     userEmail: donorEmail,
     image: donorImage,
+    fee: "0",
   };
   delete requesterStatement._id;
   // console.log("requester statement", requesterStatement);

@@ -47,6 +47,8 @@ exports.mechantToPersonal = async (req, res) => {
     ...sendMoneyInfo,
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
+    type: "M to P",
+    fee: fee.toString(),
   };
 
   const merchantsStatementResult = await addStatement(merchantsStatement);
@@ -63,6 +65,7 @@ exports.mechantToPersonal = async (req, res) => {
     userName: sendMoneyInfo?.name,
     userEmail: merchantsEmail,
     email: receiversEmail,
+    fee: "0",
   };
   const receiversStatementResult = await addStatement(receiversStatement);
 

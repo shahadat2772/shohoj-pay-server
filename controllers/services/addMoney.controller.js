@@ -23,7 +23,10 @@ exports.addMoney = async (req, res) => {
     notificationMessage
   );
   // console.log("Add Money statement", addMoneyInfo);
-  const addMoneyStatementResult = await addStatement(addMoneyInfo);
+  const addMoneyStatementResult = await addStatement({
+    ...addMoneyInfo,
+    fee: "0",
+  });
   if (
     updateBalanceResult.message === "success" &&
     addMoneyStatementResult.insertedId &&

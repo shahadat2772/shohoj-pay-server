@@ -24,6 +24,7 @@ exports.saveMoney = async (req, res) => {
   const saveMoneyStateMent = {
     ...saveMoneyInfo,
     image: saveMoneyImage,
+    fee: "0",
   };
   const savingStatementResult = await addStatement(saveMoneyStateMent);
   if (

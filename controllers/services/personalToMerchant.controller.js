@@ -49,6 +49,7 @@ exports.personalToMerchant = async (req, res) => {
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
     image: receiversImage,
+    fee: fee.toString(),
   };
   const senderStatementResult = await addStatement(sendersStateMent);
   const updateReceiversBalanceResult = await updateBalance(
@@ -62,6 +63,7 @@ exports.personalToMerchant = async (req, res) => {
     userName: merchantPayInfo?.name,
     userEmail: senderEmail,
     email: receiversEmail,
+    fee: "0",
   };
   const receiversStatementResult = await addStatement(receiversStatement);
 

@@ -51,6 +51,7 @@ exports.sendMoney = async (req, res) => {
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
     image: receiverImage,
+    fee: fee.toString(),
   };
   // console.log("Senders Statement", sendersStatement);
   const sendersStatementResult = await addStatement(sendersStatement);
@@ -67,6 +68,7 @@ exports.sendMoney = async (req, res) => {
     userName: sendMoneyInfo?.name,
     userEmail: sendersEmail,
     email: receiversEmail,
+    fee: "0",
   };
   // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
