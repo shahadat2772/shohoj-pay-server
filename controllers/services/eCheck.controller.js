@@ -31,6 +31,7 @@ exports.eCheckInfo = async (req, res) => {
     ...eCheckInfo,
     serialNumber: uuidv4(),
     image: issuerImage,
+    fee: "0",
   };
   const eCheckStatement = await addStatement(eCheckStateMent);
   let notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
