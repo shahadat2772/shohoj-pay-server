@@ -35,7 +35,6 @@ exports.sendMoney = async (req, res) => {
   }
   const amount = parseInt(sendMoneyInfo?.amount);
   const fee = Number((amount * 0.01).toFixed(2));
-  console.log(fee);
   const updateSendersBalanceResult = await updateBalance(
     sendersEmail,
     -amount,
