@@ -23,6 +23,7 @@ exports.withdrawSavings = async (req, res) => {
   const withdrawStateMentInfo = {
     ...withdrawInfo,
     image: withdrawImage,
+    fee: "0",
   };
   const withdrawStateMent = await addStatement(withdrawStateMentInfo);
   const notificationMessage = `You have withdrawn amount $${amount} from your savings.`;

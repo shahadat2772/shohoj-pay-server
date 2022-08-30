@@ -47,6 +47,7 @@ exports.merchantToMerchant = async (req, res) => {
     ...sendMoneyInfo,
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
+    fee: fee.toString(),
   };
   // console.log("Senders Statement", sendersStatement);
   const sendersStatementResult = await addStatement(sendersStatement);
@@ -63,6 +64,7 @@ exports.merchantToMerchant = async (req, res) => {
     userName: sendMoneyInfo?.name,
     userEmail: sendersEmail,
     email: receiversEmail,
+    fee: "0",
   };
   // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
