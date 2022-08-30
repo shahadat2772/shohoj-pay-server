@@ -95,10 +95,3 @@ exports.sendNotification = async (email, message) => {
   );
   return sendNotificationResult;
 };
-
-// Admin
-// exports.cutFee(email, amount) = async () => {
-
-// }
-
-// Merchant
