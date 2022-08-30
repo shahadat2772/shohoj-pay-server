@@ -90,13 +90,8 @@ exports.sendNotification = async (email, message) => {
     avatar,
     status: "unseen",
   };
-  const sendNotificationResult = notificationCollection.insertOne(notification);
+  const sendNotificationResult = await notificationCollection.insertOne(
+    notification
+  );
   return sendNotificationResult;
 };
-
-// Admin
-// exports.cutFee(email, amount) = async () => {
-
-// }
-
-// Merchant
