@@ -76,21 +76,15 @@ exports.sendMoney = async (req, res) => {
   const receiverNotification = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
   const receiverNotificationResult = await sendNotification(
     receiversEmail,
-    receiverNotification
-  );
-  // SENDER NOTIFICATION
-  const senderNotification = `You have successfully send money of $${sendMoneyInfo.amount}, to ${sendersEmail}.`;
-  const senderNotificationResult = await sendNotification(
-    sendersEmail,
-    senderNotification
+    receiverNotification,
+    sendMoneyInfo?.image
   );
 
   if (
     sendersStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
     receiversStatementResult?.insertedId &&
-    receiverNotificationResult.insertedId &&
-    senderNotificationResult.insertedId
+    receiverNotificationResult.insertedId
   ) {
     res.send({ success: `$${amount} sended success fully.` });
   }
