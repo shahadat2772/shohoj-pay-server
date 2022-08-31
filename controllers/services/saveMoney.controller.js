@@ -5,7 +5,7 @@ const {
 } = require("../shared.logics");
 
 const saveMoneyImage =
-  "https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png";
+  "https://www.svgrepo.com/show/108565/tool-for-saving-money.svg";
 
 // Save Money
 exports.saveMoney = async (req, res) => {

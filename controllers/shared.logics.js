@@ -79,15 +79,13 @@ exports.getUserInfo = async (email) => {
 };
 
 // Notifications
-exports.sendNotification = async (email, message) => {
-  const receiver = userCollection.findOne({ email: email });
-  const avatar = receiver?.avatar;
+exports.sendNotification = async (receiverEmail, message, image) => {
   const notification = {
     message,
-    email,
+    email: receiverEmail,
+    image,
     time,
     date,
-    avatar,
     status: "unseen",
   };
   const sendNotificationResult = await notificationCollection.insertOne(

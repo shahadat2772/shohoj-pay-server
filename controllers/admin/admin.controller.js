@@ -132,7 +132,7 @@ exports.getTransactionReport = async (req, res) => {
   const MtoM = transactions.filter((trans) => trans.type === "M to M");
   const MtoP = transactions.filter((trans) => trans.type === "M to P");
   const withdrawSavings = transactions.filter(
-    (trans) => trans.type === "Withdraw Savings"
+    (trans) => trans.type === "Transfer Savings"
   );
 
   const totalAddMoney = getSum(addMoney);
