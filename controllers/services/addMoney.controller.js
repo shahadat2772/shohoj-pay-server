@@ -20,8 +20,7 @@ exports.addMoney = async (req, res) => {
   });
   if (
     updateBalanceResult.message === "success" &&
-    addMoneyStatementResult.insertedId &&
-    sendNotificationResult.insertedId
+    addMoneyStatementResult.insertedId
   ) {
     res.send({
       success: `$${amount} added successfully`,

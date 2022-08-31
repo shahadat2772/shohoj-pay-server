@@ -131,7 +131,7 @@ exports.getTransactionReport = async (req, res) => {
   const eCheck = transactions.filter((trans) => trans.type === "E-Check");
   const MtoM = transactions.filter((trans) => trans.type === "M to M");
   const MtoP = transactions.filter((trans) => trans.type === "M to P");
-  const withdrawSavings = transactions.filter(
+  const transferSavings = transactions.filter(
     (trans) => trans.type === "Transfer Savings"
   );
 
@@ -144,7 +144,7 @@ exports.getTransactionReport = async (req, res) => {
   const totalECheck = getSum(eCheck);
   const totalMtoM = getSum(MtoM);
   const totalMtoP = getSum(MtoP);
-  const totalWithdrawSavings = getSum(withdrawSavings);
+  const totalTransferSavings = getSum(transferSavings);
 
   const totalTransactionAmount = getSum(transactions);
 
@@ -157,7 +157,7 @@ exports.getTransactionReport = async (req, res) => {
   const totalECheckFees = sumFee(eCheck);
   const totalMtoMFees = sumFee(MtoM);
   const totalMtoPFees = sumFee(MtoP);
-  const totalWithdrawSavingsFees = sumFee(withdrawSavings);
+  const totalTransferSavingsFees = sumFee(transferSavings);
 
   const totalFees =
     totalAddMoneyFees +
@@ -169,7 +169,7 @@ exports.getTransactionReport = async (req, res) => {
     totalECheckFees +
     totalMtoMFees +
     totalMtoPFees +
-    totalWithdrawSavingsFees;
+    totalTransferSavingsFees;
 
   const data = {
     totalAddMoney,
@@ -199,9 +199,9 @@ exports.getTransactionReport = async (req, res) => {
     totalMtoP,
     mtoPTransactionCount: MtoP.length,
     totalMtoPFees,
-    totalWithdrawSavings,
-    withdrawSavingsTransactionCount: withdrawSavings.length,
-    totalWithdrawSavingsFees,
+    totalTransferSavings,
+    transferSavingsTransactionCount: withdrawSavings.length,
+    totalTransferSavingsFees,
     totalTransactionAmount,
     totalFees,
     availableMonths,
