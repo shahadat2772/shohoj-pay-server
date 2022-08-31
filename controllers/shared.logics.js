@@ -12,7 +12,7 @@ const time = new Date().toLocaleTimeString();
 exports.updateBalance = async (email, amount, fee = 0) => {
   const balanceInfo = await balanceCollection.findOne({ email });
   const lastBalance = Number(balanceInfo?.balance);
-  const newBalance = (lastBalance + amount - fee).toString();
+  const newBalance = (lastBalance + amount - fee).toFixed(2).toString();
   if (parseInt(newBalance) < 0) {
     return {
       message: "insufficient",
@@ -23,7 +23,7 @@ exports.updateBalance = async (email, amount, fee = 0) => {
     const newRevenue = Number(revenue) + fee;
     const uDoc = {
       $set: {
-        revenue: newRevenue.toString(),
+        revenue: newRevenue.toFixed(2).toString(),
       },
     };
     const cutFeeResult = await shohojPay.updateOne({ id: "shohojPay" }, uDoc);
@@ -79,24 +79,17 @@ exports.getUserInfo = async (email) => {
 };
 
 // Notifications
-exports.sendNotification = async (email, message) => {
-  const receiver = userCollection.findOne({ email: email });
-  const avatar = receiver?.avatar;
+exports.sendNotification = async (receiverEmail, message, image) => {
   const notification = {
     message,
-    email,
+    email: receiverEmail,
+    image,
     time,
     date,
-    avatar,
     status: "unseen",
   };
-  const sendNotificationResult = notificationCollection.insertOne(notification);
+  const sendNotificationResult = await notificationCollection.insertOne(
+    notification
+  );
   return sendNotificationResult;
 };
-
-// Admin
-// exports.cutFee(email, amount) = async () => {
-
-// }
-
-// Merchant

@@ -4,8 +4,8 @@ const {
   addStatement,
 } = require("../shared.logics");
 
-const date = new Date().toLocaleDateString();
-const time = new Date().toLocaleTimeString();
+const saveMoneyImage =
+  "https://www.svgrepo.com/show/108565/tool-for-saving-money.svg";
 
 // Save Money
 exports.saveMoney = async (req, res) => {
@@ -21,7 +21,12 @@ exports.saveMoney = async (req, res) => {
   }
   const updateSavingResult = await updateSaving(email, amount);
   console.log("Save money statement", saveMoneyInfo);
-  const savingStatementResult = await addStatement(saveMoneyInfo);
+  const saveMoneyStateMent = {
+    ...saveMoneyInfo,
+    image: saveMoneyImage,
+    fee: "0",
+  };
+  const savingStatementResult = await addStatement(saveMoneyStateMent);
   if (
     updateBalanceResult.message == "success" &&
     updateSavingResult.modifiedCount > 0 &&

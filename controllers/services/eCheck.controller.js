@@ -4,16 +4,20 @@ const {
   sendNotification,
   addStatement,
 } = require("../shared.logics");
+const { v4: uuidv4 } = require("uuid");
 
 // E-Check Money
 exports.eCheckInfo = async (req, res) => {
   const { eCheckInfo } = req?.body;
+  console.log(eCheckInfo);
   const from = eCheckInfo?.from;
   const to = eCheckInfo?.to;
-  const issuerInfo = await getUserInfo(to);
-  if (!issuerInfo) {
+  const senderImage = eCheckInfo?.image;
+  const receiverInfo = await getUserInfo(to);
+  const receiverImage = receiverInfo?.avatar;
+  if (!receiverInfo) {
     res.send({
-      error: "Issuer not found.",
+      error: "Receiver not found.",
     });
     return;
   }
@@ -25,15 +29,37 @@ exports.eCheckInfo = async (req, res) => {
     });
     return;
   }
-  const eCheckStatement = await addStatement(eCheckInfo);
-  let notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
-  if (to === from) {
-    notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from yourself.`;
+
+  let transImage;
+  let notificationImage;
+  let notificationMessage;
+  if (from === to) {
+    transImage = "https://corduromerchantservices.com/images/Check.png";
+    notificationImage = "https://corduromerchantservices.com/images/Check.png";
+    notificationMessage = `You have issued an ECheck with amount of $${amount} to ${to}. Check your email to know more.`;
+  } else {
+    transImage = receiverImage;
+    notificationImage = senderImage;
+    notificationMessage = `You have received an ECheck with amount of $${amount} from ${from}. Check your email to know more.`;
   }
+
+  console.log(notificationImage);
+
+  const eCheckStateMent = {
+    ...eCheckInfo,
+    serialNumber: uuidv4(),
+    name: receiverInfo?.name,
+    image: transImage,
+    fee: "0",
+  };
+  const eCheckStatement = await addStatement(eCheckStateMent);
+
   const sendNotificationResult = await sendNotification(
     to,
-    notificationMessage
+    notificationMessage,
+    notificationImage
   );
+
   if (eCheckStatement?.insertedId && sendNotificationResult.insertedId) {
     res.send({ success: `$${amount} issued success fully.` });
   }

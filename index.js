@@ -3,7 +3,6 @@ const port = process.env.PORT || 5000;
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-
 // MiddleWere
 app.use(express.json());
 app.use(cors());
@@ -49,6 +48,7 @@ async function run() {
   app.use(notificationRoute);
   // Admin Route
   app.use(adminRoute);
+
   try {
     await client.connect();
   } finally {
@@ -60,12 +60,32 @@ run().catch(console.dir);
 app.get("/", (req, res) => {
   res.send("Hello from Shohoj Pay!");
 });
+
 app.use((req, res, next) => {
   res.status(404).json({
     message: "Resource Not Found",
   });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("Responding to", port);
+});
+
+// socket.io
+const io = require("socket.io")(server, {
+  pingTimeOut: 6000,
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.on("connection", (socket) => {
+  // Joining room
+  socket.on("join_room", (email) => {
+    socket.join(email);
+  });
+
+  socket.on("send_notification", (data) => {
+    socket.to(data?.email).emit("receive_notification", data);
+  });
 });

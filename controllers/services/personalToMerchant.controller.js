@@ -8,6 +8,7 @@ const {
 exports.personalToMerchant = async (req, res) => {
   const { merchantPayInfo } = req?.body;
   const senderEmail = merchantPayInfo?.from;
+  const senderImage = merchantPayInfo?.image;
   const receiversEmail = merchantPayInfo?.to;
   const amount = parseInt(merchantPayInfo?.amount);
   const fee = Number((amount * 0.01).toFixed(2));
@@ -20,6 +21,7 @@ exports.personalToMerchant = async (req, res) => {
   }
 
   const receiversInfo = await getUserInfo(receiversEmail);
+  const receiversImage = receiversInfo?.avatar;
   if (!receiversInfo) {
     res.send({
       error: "Receiver not found.",
@@ -47,12 +49,15 @@ exports.personalToMerchant = async (req, res) => {
     ...merchantPayInfo,
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
+    image: receiversImage,
+    fee: fee.toString(),
   };
   const senderStatementResult = await addStatement(sendersStateMent);
   const updateReceiversBalanceResult = await updateBalance(
     receiversEmail,
     amount
   );
+
   const receiversStatement = {
     ...merchantPayInfo,
     name: receiversInfo?.name,
@@ -60,26 +65,23 @@ exports.personalToMerchant = async (req, res) => {
     userName: merchantPayInfo?.name,
     userEmail: senderEmail,
     email: receiversEmail,
+    fee: "0",
   };
   const receiversStatementResult = await addStatement(receiversStatement);
 
-  const senderNotificationMessage = `$${amount} has been successfully sent to ${receiversEmail}`;
   const recieverNotificationMessage = `You have received $${amount}, from ${senderEmail}.`;
-  const senderNotification = await sendNotification(
-    senderEmail,
-    senderNotificationMessage
-  );
+
   const sendRecieverNotificationResult = await sendNotification(
     receiversEmail,
-    recieverNotificationMessage
+    recieverNotificationMessage,
+    senderImage
   );
 
   // if (
   senderStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
     receiversStatementResult?.insertedId &&
-    sendRecieverNotificationResult.insertedId &&
-    senderNotification.insertedId;
+    sendRecieverNotificationResult.insertedId;
   // ) {
 
   res.send({ success: `$${amount} sended success fully.` });

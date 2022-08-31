@@ -2,9 +2,9 @@ const {
   getUserInfo,
   addStatement,
   updateBalance,
+  sendNotification,
 } = require("../shared.logics");
 const requestCollection = require("../../models/moneyRequests.model");
-const userCollection = require("../../models/users.model");
 const { ObjectId, ObjectID } = require("mongodb");
 
 const fullDate = new Date().toLocaleDateString();
@@ -17,8 +17,10 @@ const time = new Date().toLocaleTimeString();
 // Request Money
 exports.requestMoney = async (req, res) => {
   const { requestMoneyInfo } = req?.body;
+  console.log(requestMoneyInfo);
   const from = requestMoneyInfo?.from;
   const to = requestMoneyInfo?.to;
+  const requesterName = requestMoneyInfo?.requesterName;
   if (from === to) {
     res.send({
       error: "You have entered your email to request money from.",
@@ -27,6 +29,7 @@ exports.requestMoney = async (req, res) => {
   }
   const amount = requestMoneyInfo?.amount;
   const donorInfo = await getUserInfo(to);
+  const donorImage = donorInfo?.avatar;
   if (!donorInfo) {
     res.send({
       error: "Sender not found.",
@@ -38,9 +41,17 @@ exports.requestMoney = async (req, res) => {
     ...requestMoneyInfo,
     donorName: donorInfo?.name,
   };
-  // console.log("Money request info", moneyRequest);
   const moneyRequestResult = await requestCollection.insertOne(moneyRequest);
-  if (moneyRequestResult.insertedId) {
+
+  // Sending notification to donor
+  const notificationMessage = `${requesterName} requested for $${amount}.`;
+  const sendNotificationResult = await sendNotification(
+    to,
+    notificationMessage,
+    requestMoneyInfo?.image
+  );
+
+  if (moneyRequestResult.insertedId && sendNotificationResult.insertedId) {
     res.send({
       success: `$${amount} requested successfully.`,
     });
@@ -53,18 +64,14 @@ exports.requestMoney = async (req, res) => {
 
 exports.approveMoneyRequest = async (req, res) => {
   const { requestMoneyInfo } = req?.body;
-
   const requesterName = requestMoneyInfo?.requesterName;
   const donorName = requestMoneyInfo?.donorName;
   const requesterEmail = requestMoneyInfo?.from;
   const donorEmail = requestMoneyInfo?.to;
-
+  const donorInfo = await getUserInfo(donorEmail);
+  const donorImage = donorInfo?.avatar;
   const amount = parseInt(requestMoneyInfo?.amount);
   const fee = Number((amount * 0.01).toFixed(2));
-  // // let fee = 0;
-  // const requesterInfo = await getUserInfo(donorEmail);
-  // // if (requesterInfo.type === "merchant") fee = 5;
-  // Adding statement and updating balance for donor
   const donorsBalanceUpdate = await updateBalance(donorEmail, -amount, fee);
   if (donorsBalanceUpdate.message === "insufficient") {
     res.send({
@@ -74,6 +81,7 @@ exports.approveMoneyRequest = async (req, res) => {
   }
   const donorStatement = {
     ...requestMoneyInfo,
+    type: "Request Money",
     userName: requesterName,
     userEmail: requesterEmail,
     name: donorName,
@@ -82,14 +90,13 @@ exports.approveMoneyRequest = async (req, res) => {
     fullDate,
     time,
     date,
+    fee: fee.toString(),
   };
   delete donorStatement.requesterName;
   delete donorStatement.donorName;
   delete donorStatement._id;
-  // console.log("donor statement", donorStatement);
   const donorsStatementResult = await addStatement(donorStatement);
 
-  // Adding statement and updating balance for requester
   const requestersBalanceUpdate = await updateBalance(requesterEmail, amount);
   const requesterStatement = {
     ...donorStatement,
@@ -98,10 +105,20 @@ exports.approveMoneyRequest = async (req, res) => {
     email: requesterEmail,
     userName: donorName,
     userEmail: donorEmail,
+    image: donorImage,
+    fee: "0",
   };
   delete requesterStatement._id;
-  // console.log("requester statement", requesterStatement);
+
   const requesterStatementResult = await addStatement(requesterStatement);
+
+  // RECEIVER NOTIFICATION
+  const requesterNotification = `Your request of $${amount} from ${donorEmail} was approved by ${donorName}.`;
+  const senderNotification = await sendNotification(
+    requesterEmail,
+    requesterNotification,
+    donorImage
+  );
 
   // Updating the money request
   const updatedMoneyRequest = {
@@ -119,6 +136,7 @@ exports.approveMoneyRequest = async (req, res) => {
     donorsStatementResult.insertedId &&
     requestersBalanceUpdate.message === "success" &&
     requesterStatementResult.insertedId &&
+    senderNotification.insertedId &&
     moneyRequestUpdateResult.modifiedCount > 0
   ) {
     res.send({

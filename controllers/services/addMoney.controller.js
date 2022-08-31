@@ -12,11 +12,15 @@ exports.addMoney = async (req, res) => {
     });
     return;
   }
+
   // console.log("Add Money statement", addMoneyInfo);
-  const addMoneyStatementResult = await addStatement(addMoneyInfo);
+  const addMoneyStatementResult = await addStatement({
+    ...addMoneyInfo,
+    fee: "0",
+  });
   if (
-    addMoneyStatementResult.insertedId &&
-    updateBalanceResult.message === "success"
+    updateBalanceResult.message === "success" &&
+    addMoneyStatementResult.insertedId
   ) {
     res.send({
       success: `$${amount} added successfully`,

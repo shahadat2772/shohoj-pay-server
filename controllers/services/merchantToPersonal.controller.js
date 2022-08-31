@@ -47,6 +47,9 @@ exports.mechantToPersonal = async (req, res) => {
     ...sendMoneyInfo,
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
+    image: receiversInfo.avatar,
+    type: "M to P",
+    fee: fee.toString(),
   };
 
   const merchantsStatementResult = await addStatement(merchantsStatement);
@@ -63,26 +66,23 @@ exports.mechantToPersonal = async (req, res) => {
     userName: sendMoneyInfo?.name,
     userEmail: merchantsEmail,
     email: receiversEmail,
+    fee: "0",
   };
   const receiversStatementResult = await addStatement(receiversStatement);
 
   const recieverNotificationMessage = `You have received $${sendMoneyInfo.amount}, from ${merchantsEmail}.`;
-  const merchantNotificationMessage = `$${sendMoneyInfo.amount} has been successfully sent to ${receiversEmail}`;
+
   const sendRecieverNotificationResult = await sendNotification(
     receiversEmail,
-    recieverNotificationMessage
-  );
-  const sendMerchantNotificationResult = await sendNotification(
-    merchantsEmail,
-    merchantNotificationMessage
+    recieverNotificationMessage,
+    sendMoneyInfo.image
   );
 
   if (
     merchantsStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
     receiversStatementResult?.insertedId &&
-    sendRecieverNotificationResult.insertedId &&
-    sendMerchantNotificationResult.insertedId
+    sendRecieverNotificationResult.insertedId
   ) {
     res.send({ success: `$${amount} sended success fully.` });
   }

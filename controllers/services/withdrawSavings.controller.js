@@ -5,6 +5,7 @@ const {
   updateSaving,
 } = require("../shared.logics");
 
+const withdrawImage = "https://static.thenounproject.com/png/4885469-200.png";
 // E-Check Money
 exports.withdrawSavings = async (req, res) => {
   const { withdrawInfo } = req?.body;
@@ -18,7 +19,12 @@ exports.withdrawSavings = async (req, res) => {
     return;
   }
   const updateUserBalance = await updateBalance(email, amount);
-  const withdrawStateMent = await addStatement(withdrawInfo);
+  const withdrawStateMentInfo = {
+    ...withdrawInfo,
+    image: withdrawImage,
+    fee: "0",
+  };
+  const withdrawStateMent = await addStatement(withdrawStateMentInfo);
   const notificationMessage = `You have withdrawn amount $${amount} from your savings.`;
   const sendNotificationResult = await sendNotification(
     email,
