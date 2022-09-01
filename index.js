@@ -80,6 +80,7 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log("User connected", socket.id);
   // Joining room
   socket.on("join_room", (email) => {
     socket.join(email);
