@@ -83,15 +83,20 @@ exports.updateAccountStatus = async (req, res) => {
 
 // Getting transaction report
 exports.getTransactionReport = async (req, res) => {
-  const transactions = await transactionCollection.find().toArray();
+  const month = req?.headers?.month;
 
+  // Calculating available months
+  const allTransaction = await transactionCollection.find({}).toArray();
   let availableMonths = [];
-  transactions.forEach((element) => {
+  allTransaction.forEach((element) => {
     if (availableMonths.indexOf(element.date) == -1) {
-      console.log(element.date);
       availableMonths.push(element.date);
     }
   });
+
+  const transactions = await transactionCollection
+    .find(month === "all" ? {} : { date: month })
+    .toArray();
 
   // Calculating sum
   const getSum = (array) => {
@@ -126,8 +131,8 @@ exports.getTransactionReport = async (req, res) => {
   const eCheck = transactions.filter((trans) => trans.type === "E-Check");
   const MtoM = transactions.filter((trans) => trans.type === "M to M");
   const MtoP = transactions.filter((trans) => trans.type === "M to P");
-  const withdrawSavings = transactions.filter(
-    (trans) => trans.type === "Withdraw Savings"
+  const transferSavings = transactions.filter(
+    (trans) => trans.type === "Transfer Savings"
   );
 
   const totalAddMoney = getSum(addMoney);
@@ -139,7 +144,9 @@ exports.getTransactionReport = async (req, res) => {
   const totalECheck = getSum(eCheck);
   const totalMtoM = getSum(MtoM);
   const totalMtoP = getSum(MtoP);
-  const totalWithdrawSavings = getSum(withdrawSavings);
+  const totalTransferSavings = getSum(transferSavings);
+
+  const totalTransactionAmount = getSum(transactions);
 
   const totalAddMoneyFees = sumFee(addMoney);
   const totalSendMoneyFees = sumFee(sendMoney);
@@ -150,7 +157,19 @@ exports.getTransactionReport = async (req, res) => {
   const totalECheckFees = sumFee(eCheck);
   const totalMtoMFees = sumFee(MtoM);
   const totalMtoPFees = sumFee(MtoP);
-  const totalWithdrawSavingsFees = sumFee(withdrawSavings);
+  const totalTransferSavingsFees = sumFee(transferSavings);
+
+  const totalFees =
+    totalAddMoneyFees +
+    totalSendMoneyFees +
+    totalReceiveMoneyFees +
+    totalSaveMoneyFees +
+    totalRequestMoneyFees +
+    totalMerchantPayFees +
+    totalECheckFees +
+    totalMtoMFees +
+    totalMtoPFees +
+    totalTransferSavingsFees;
 
   const data = {
     totalAddMoney,
@@ -180,9 +199,13 @@ exports.getTransactionReport = async (req, res) => {
     totalMtoP,
     mtoPTransactionCount: MtoP.length,
     totalMtoPFees,
-    totalWithdrawSavings,
-    withdrawSavingsTransactionCount: withdrawSavings.length,
-    totalWithdrawSavingsFees,
+    totalTransferSavings,
+    transferSavingsTransactionCount: transferSavings.length,
+    totalTransferSavingsFees,
+    totalTransactionAmount,
+    totalFees,
+    availableMonths,
   };
+
   res.send(data);
 };

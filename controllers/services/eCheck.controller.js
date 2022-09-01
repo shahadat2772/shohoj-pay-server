@@ -4,44 +4,57 @@ const {
   sendNotification,
   addStatement,
 } = require("../shared.logics");
-const { v4: uuidv4 } = require("uuid");
 
 // E-Check Money
 exports.eCheckInfo = async (req, res) => {
   const { eCheckInfo } = req?.body;
   const from = eCheckInfo?.from;
   const to = eCheckInfo?.to;
-  const issuerInfo = await getUserInfo(to);
-  const issuerImage = issuerInfo?.avatar;
-  if (!issuerInfo) {
+  const senderImage = eCheckInfo?.image;
+  const receiverInfo = await getUserInfo(to);
+  const receiverImage = receiverInfo?.avatar;
+  if (!receiverInfo) {
     res.send({
-      error: "Issuer not found.",
+      error: "Receiver not found.",
     });
     return;
   }
   const amount = parseInt(eCheckInfo?.amount);
-  const updateSendersBalanceResult = await updateBalance(from, -amount);
+  const fee = Number((amount * 0.02).toFixed(2));
+  const updateSendersBalanceResult = await updateBalance(from, -amount, fee);
   if (updateSendersBalanceResult.message === "insufficient") {
     res.send({
       error: "Insufficient balance.",
     });
     return;
   }
+  let transImage;
+  let notificationImage;
+  let notificationMessage;
+  if (from === to) {
+    transImage = "https://corduromerchantservices.com/images/Check.png";
+    notificationImage = "https://corduromerchantservices.com/images/Check.png";
+    notificationMessage = `You have issued an ECheck with amount of $${amount} to ${to}. Check your email to know more.`;
+  } else {
+    transImage = receiverImage;
+    notificationImage = senderImage;
+    notificationMessage = `You have received an ECheck with amount of $${amount} from ${from}. Check your email to know more.`;
+  }
+  gi;
   const eCheckStateMent = {
     ...eCheckInfo,
-    serialNumber: uuidv4(),
-    image: issuerImage,
-    fee: "0",
+    name: receiverInfo?.name,
+    image: transImage,
+    fee: fee.toString(),
   };
   const eCheckStatement = await addStatement(eCheckStateMent);
-  let notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from ${from}.`;
-  if (to === from) {
-    notificationMessage = `Congratulation You have been issued with E-Check amount $${amount}, from yourself.`;
-  }
+
   const sendNotificationResult = await sendNotification(
     to,
-    notificationMessage
+    notificationMessage,
+    notificationImage
   );
+
   if (eCheckStatement?.insertedId && sendNotificationResult.insertedId) {
     res.send({ success: `$${amount} issued success fully.` });
   }

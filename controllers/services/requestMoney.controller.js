@@ -17,8 +17,10 @@ const time = new Date().toLocaleTimeString();
 // Request Money
 exports.requestMoney = async (req, res) => {
   const { requestMoneyInfo } = req?.body;
+  console.log(requestMoneyInfo);
   const from = requestMoneyInfo?.from;
   const to = requestMoneyInfo?.to;
+  const requesterName = requestMoneyInfo?.requesterName;
   if (from === to) {
     res.send({
       error: "You have entered your email to request money from.",
@@ -39,9 +41,17 @@ exports.requestMoney = async (req, res) => {
     ...requestMoneyInfo,
     donorName: donorInfo?.name,
   };
-  // console.log("Money request info", moneyRequest);
   const moneyRequestResult = await requestCollection.insertOne(moneyRequest);
-  if (moneyRequestResult.insertedId) {
+
+  // Sending notification to donor
+  const notificationMessage = `${requesterName} requested for $${amount}.`;
+  const sendNotificationResult = await sendNotification(
+    to,
+    notificationMessage,
+    requestMoneyInfo?.image
+  );
+
+  if (moneyRequestResult.insertedId && sendNotificationResult.insertedId) {
     res.send({
       success: `$${amount} requested successfully.`,
     });
@@ -62,10 +72,6 @@ exports.approveMoneyRequest = async (req, res) => {
   const donorImage = donorInfo?.avatar;
   const amount = parseInt(requestMoneyInfo?.amount);
   const fee = Number((amount * 0.01).toFixed(2));
-  // // let fee = 0;
-  // const requesterInfo = await getUserInfo(donorEmail);
-  // // if (requesterInfo.type === "merchant") fee = 5;
-  // Adding statement and updating balance for donor
   const donorsBalanceUpdate = await updateBalance(donorEmail, -amount, fee);
   if (donorsBalanceUpdate.message === "insufficient") {
     res.send({
@@ -89,10 +95,8 @@ exports.approveMoneyRequest = async (req, res) => {
   delete donorStatement.requesterName;
   delete donorStatement.donorName;
   delete donorStatement._id;
-  // console.log("donor statement", donorStatement);
   const donorsStatementResult = await addStatement(donorStatement);
 
-  // Adding statement and updating balance for requester
   const requestersBalanceUpdate = await updateBalance(requesterEmail, amount);
   const requesterStatement = {
     ...donorStatement,
@@ -105,19 +109,15 @@ exports.approveMoneyRequest = async (req, res) => {
     fee: "0",
   };
   delete requesterStatement._id;
-  // console.log("requester statement", requesterStatement);
+
   const requesterStatementResult = await addStatement(requesterStatement);
+
   // RECEIVER NOTIFICATION
-  const requesterNotification = `your request of $${amount} has been received from ${donorEmail}.`;
+  const requesterNotification = `Your request of $${amount} from ${donorEmail} was approved by ${donorName}.`;
   const senderNotification = await sendNotification(
     requesterEmail,
-    requesterNotification
-  );
-  // RECEIVER NOTIFICATION
-  const donorNotification = `You have successfully send money of $${amount}, to ${requesterEmail}.`;
-  const donorNotificationResult = await sendNotification(
-    donorEmail,
-    donorNotification
+    requesterNotification,
+    donorImage
   );
 
   // Updating the money request
@@ -137,7 +137,6 @@ exports.approveMoneyRequest = async (req, res) => {
     requestersBalanceUpdate.message === "success" &&
     requesterStatementResult.insertedId &&
     senderNotification.insertedId &&
-    donorNotificationResult.insertedId &&
     moneyRequestUpdateResult.modifiedCount > 0
   ) {
     res.send({

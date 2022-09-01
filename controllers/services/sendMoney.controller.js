@@ -32,7 +32,7 @@ exports.sendMoney = async (req, res) => {
     return;
   }
   const amount = parseInt(sendMoneyInfo?.amount);
-  const fee = Number((amount * 0.01).toFixed(2));
+  const fee = Number((amount * 0.015).toFixed(2));
   const updateSendersBalanceResult = await updateBalance(
     sendersEmail,
     -amount,
@@ -76,21 +76,15 @@ exports.sendMoney = async (req, res) => {
   const receiverNotification = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
   const receiverNotificationResult = await sendNotification(
     receiversEmail,
-    receiverNotification
-  );
-  // SENDER NOTIFICATION
-  const senderNotification = `You have successfully send money of $${sendMoneyInfo.amount}, to ${sendersEmail}.`;
-  const senderNotificationResult = await sendNotification(
-    sendersEmail,
-    senderNotification
+    receiverNotification,
+    sendMoneyInfo?.image
   );
 
   if (
     sendersStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
     receiversStatementResult?.insertedId &&
-    receiverNotificationResult.insertedId &&
-    senderNotificationResult.insertedId
+    receiverNotificationResult.insertedId
   ) {
     res.send({ success: `$${amount} sended success fully.` });
   }

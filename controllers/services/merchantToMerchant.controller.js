@@ -29,7 +29,7 @@ exports.merchantToMerchant = async (req, res) => {
     return;
   }
   const amount = parseInt(sendMoneyInfo?.amount);
-  const fee = Number((amount * 0.01).toFixed(2));
+  const fee = Number((amount * 0.005).toFixed(2));
   const updateSendersBalanceResult = await updateBalance(
     sendersEmail,
     -amount,
@@ -48,6 +48,7 @@ exports.merchantToMerchant = async (req, res) => {
     userName: receiversInfo?.name,
     userEmail: receiversEmail,
     fee: fee.toString(),
+    image: receiversInfo?.avatar,
   };
   // console.log("Senders Statement", sendersStatement);
   const sendersStatementResult = await addStatement(sendersStatement);
@@ -72,20 +73,15 @@ exports.merchantToMerchant = async (req, res) => {
   const recieversNotificationMessage = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
   const sendRecieversNotificationResult = await sendNotification(
     receiversEmail,
-    recieversNotificationMessage
-  );
-  const sendersNotificationMessage = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;
-  const sendSendersNotificationResult = await sendNotification(
-    sendersEmail,
-    sendersNotificationMessage
+    recieversNotificationMessage,
+    sendMoneyInfo?.image
   );
 
   if (
     sendersStatementResult?.insertedId &&
     updateReceiversBalanceResult?.message === "success" &&
     receiversStatementResult?.insertedId &&
-    sendRecieversNotificationResult.insertedId &&
-    sendSendersNotificationResult
+    sendRecieversNotificationResult.insertedId
   ) {
     res.send({ success: `$${amount} sended success fully.` });
   }

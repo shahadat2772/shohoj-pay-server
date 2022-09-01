@@ -5,8 +5,7 @@ const {
   updateSaving,
 } = require("../shared.logics");
 
-const withdrawImage =
-  "https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png";
+const withdrawImage = "https://static.thenounproject.com/png/4885469-200.png";
 // E-Check Money
 exports.withdrawSavings = async (req, res) => {
   const { withdrawInfo } = req?.body;
