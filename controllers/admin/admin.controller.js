@@ -200,7 +200,7 @@ exports.getTransactionReport = async (req, res) => {
     mtoPTransactionCount: MtoP.length,
     totalMtoPFees,
     totalTransferSavings,
-    transferSavingsTransactionCount: withdrawSavings.length,
+    transferSavingsTransactionCount: transferSavings.length,
     totalTransferSavingsFees,
     totalTransactionAmount,
     totalFees,

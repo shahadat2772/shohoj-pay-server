@@ -30,7 +30,7 @@ exports.mechantToPersonal = async (req, res) => {
     return;
   }
   const amount = parseInt(sendMoneyInfo?.amount);
-  const fee = Number((amount * 0.01).toFixed(2));
+  const fee = Number((amount * 0.008).toFixed(2));
   const updateMerchantsBalanceResult = await updateBalance(
     merchantsEmail,
     -amount,
