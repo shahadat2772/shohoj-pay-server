@@ -75,11 +75,12 @@ const server = app.listen(port, () => {
 const io = require("socket.io")(server, {
   pingTimeOut: 6000,
   cors: {
-    origin: "http://localhost:3000/",
+    origin: "http://localhost:3000",
   },
 });
 
 io.on("connection", (socket) => {
+  console.log("User connected", socket.id);
   // Joining room
   socket.on("join_room", (email) => {
     socket.join(email);
