@@ -4,7 +4,6 @@ const {
   sendNotification,
   addStatement,
 } = require("../shared.logics");
-const { v4: uuidv4 } = require("uuid");
 
 // E-Check Money
 exports.eCheckInfo = async (req, res) => {
@@ -45,7 +44,6 @@ exports.eCheckInfo = async (req, res) => {
 
   const eCheckStateMent = {
     ...eCheckInfo,
-    serialNumber: uuidv4(),
     name: receiverInfo?.name,
     image: transImage,
     fee: fee.toString(),
