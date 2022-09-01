@@ -11,7 +11,7 @@ exports.personalToMerchant = async (req, res) => {
   const senderImage = merchantPayInfo?.image;
   const receiversEmail = merchantPayInfo?.to;
   const amount = parseInt(merchantPayInfo?.amount);
-  const fee = Number((amount * 0.01).toFixed(2));
+  const fee = Number((amount * 0.015).toFixed(2));
 
   if (senderEmail === receiversEmail) {
     res.send({

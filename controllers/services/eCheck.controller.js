@@ -9,7 +9,6 @@ const { v4: uuidv4 } = require("uuid");
 // E-Check Money
 exports.eCheckInfo = async (req, res) => {
   const { eCheckInfo } = req?.body;
-  console.log(eCheckInfo);
   const from = eCheckInfo?.from;
   const to = eCheckInfo?.to;
   const senderImage = eCheckInfo?.image;
@@ -22,7 +21,8 @@ exports.eCheckInfo = async (req, res) => {
     return;
   }
   const amount = parseInt(eCheckInfo?.amount);
-  const updateSendersBalanceResult = await updateBalance(from, -amount);
+  const fee = Number((amount * 0.02).toFixed(2));
+  const updateSendersBalanceResult = await updateBalance(from, -amount, fee);
   if (updateSendersBalanceResult.message === "insufficient") {
     res.send({
       error: "Insufficient balance.",
@@ -43,14 +43,12 @@ exports.eCheckInfo = async (req, res) => {
     notificationMessage = `You have received an ECheck with amount of $${amount} from ${from}. Check your email to know more.`;
   }
 
-  console.log(notificationImage);
-
   const eCheckStateMent = {
     ...eCheckInfo,
     serialNumber: uuidv4(),
     name: receiverInfo?.name,
     image: transImage,
-    fee: "0",
+    fee: fee.toString(),
   };
   const eCheckStatement = await addStatement(eCheckStateMent);
 
