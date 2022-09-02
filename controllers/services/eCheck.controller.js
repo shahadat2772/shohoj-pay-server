@@ -40,7 +40,6 @@ exports.eCheckInfo = async (req, res) => {
     notificationImage = senderImage;
     notificationMessage = `You have received an ECheck with amount of $${amount} from ${from}. Check your email to know more.`;
   }
-  gi;
   const eCheckStateMent = {
     ...eCheckInfo,
     name: receiverInfo?.name,
