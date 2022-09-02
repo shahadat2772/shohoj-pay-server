@@ -80,6 +80,8 @@ exports.getUserInfo = async (email) => {
 
 // Notifications
 exports.sendNotification = async (receiverEmail, message, image) => {
+  const date = new Date().toLocaleDateString();
+  const time = new Date().toLocaleTimeString();
   const notification = {
     message,
     email: receiverEmail,
