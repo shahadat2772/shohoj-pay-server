@@ -25,16 +25,7 @@ exports.withdrawSavings = async (req, res) => {
     fee: "0",
   };
   const withdrawStateMent = await addStatement(withdrawStateMentInfo);
-  const notificationMessage = `You have withdrawn amount $${amount} from your savings.`;
-  const sendNotificationResult = await sendNotification(
-    email,
-    notificationMessage
-  );
-  if (
-    updateUserBalance.message == "success" &&
-    withdrawStateMent?.insertedId &&
-    sendNotificationResult.insertedId
-  ) {
+  if (updateUserBalance.message == "success" && withdrawStateMent?.insertedId) {
     res.send({ success: `$${amount} Withdraw success fully.` });
   }
 };
