@@ -1,6 +1,5 @@
 const {
   updateBalance,
-  sendNotification,
   addStatement,
   updateSaving,
 } = require("../shared.logics");
