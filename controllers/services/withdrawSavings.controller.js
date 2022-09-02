@@ -28,7 +28,8 @@ exports.withdrawSavings = async (req, res) => {
   const notificationMessage = `You have withdrawn amount $${amount} from your savings.`;
   const sendNotificationResult = await sendNotification(
     email,
-    notificationMessage
+    notificationMessage,
+    withdrawImage
   );
   if (
     updateUserBalance.message == "success" &&
