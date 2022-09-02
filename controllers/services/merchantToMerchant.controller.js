@@ -50,7 +50,6 @@ exports.merchantToMerchant = async (req, res) => {
     fee: fee.toString(),
     image: receiversInfo?.avatar,
   };
-  // console.log("Senders Statement", sendersStatement);
   const sendersStatementResult = await addStatement(sendersStatement);
   const updateReceiversBalanceResult = await updateBalance(
     receiversEmail,
@@ -67,7 +66,6 @@ exports.merchantToMerchant = async (req, res) => {
     email: receiversEmail,
     fee: "0",
   };
-  // console.log("Receivers Statement", receiversStatement);
   const receiversStatementResult = await addStatement(receiversStatement);
 
   const recieversNotificationMessage = `You have received $${sendMoneyInfo.amount}, from ${sendersEmail}.`;

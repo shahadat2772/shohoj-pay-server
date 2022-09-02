@@ -34,19 +34,19 @@ const {
 } = require("../controllers/services/withdrawSavings.controller");
 
 // Add Money
-router.post("/addMoney", addMoney);
+router.post("/addMoney", verifyJWT, addMoney);
 // Send Money
-router.post("/sendMoney", sendMoney);
+router.post("/sendMoney", verifyJWT, sendMoney);
 // Request Money
 router.post("/requestMoney", requestMoney);
 // Save Money
-router.post("/saveMoney", saveMoney);
+router.post("/saveMoney", verifyJWT, saveMoney);
 // Approve money request
 router.post("/approveRequestMoney", approveMoneyRequest);
 // E-check
-router.post("/eCheck", eCheckInfo);
+router.post("/eCheck", verifyJWT, eCheckInfo);
 // WITHDRAW SAVINGS
-router.post("/withdraw-savings", withdrawSavings);
+router.post("/withdraw-savings", verifyJWT, withdrawSavings);
 // Get requests
 router.get("/getRequests", getRequests);
 // Get UserService
@@ -64,7 +64,7 @@ router.post(
   mechantToPersonal
 );
 // Personal to Merchant
-router.post("/personal-to-merchant", personalToMerchant);
+router.post("/personal-to-merchant", verifyJWT, personalToMerchant);
 
 // merchant to merchant
 router.post(
