@@ -23,17 +23,11 @@ const servicesRoutes = require("./routes/services.route");
 const jwtUserRoute = require("./routes/jwtUser.route");
 const userRouter = require("./routes/users.route");
 const stripeRouter = require("./routes/stripe.route");
-const balanceRoute = require("./routes/balance.route");
-const userSavingsRoute = require("./routes/savings.route");
 const userAllEmailInfo = require("./routes/userAllEmailInfo.route");
 const adminRoute = require("./routes/admin/admin.route");
 const notificationRoute = require("./routes/notification.route");
 
 async function run() {
-  // User Balance routes
-  app.use(balanceRoute);
-  // USER SAVINGS ROUTE
-  app.use(userSavingsRoute);
   // JWT USER ROUTE
   app.use(jwtUserRoute);
   // GET USER ALL EMAIL INFO
@@ -48,7 +42,6 @@ async function run() {
   app.use(notificationRoute);
   // Admin Route
   app.use(adminRoute);
-
   try {
     await client.connect();
   } finally {
@@ -80,8 +73,6 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  // console.log("User connected", socket.id);
-  // Joining room
   socket.on("join_room", (email) => {
     socket.join(email);
   });
