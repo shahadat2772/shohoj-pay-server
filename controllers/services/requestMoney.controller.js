@@ -17,7 +17,6 @@ const time = new Date().toLocaleTimeString();
 // Request Money
 exports.requestMoney = async (req, res) => {
   const { requestMoneyInfo } = req?.body;
-  console.log(requestMoneyInfo);
   const from = requestMoneyInfo?.from;
   const to = requestMoneyInfo?.to;
   const requesterName = requestMoneyInfo?.requesterName;
