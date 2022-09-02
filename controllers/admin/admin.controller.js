@@ -52,7 +52,17 @@ exports.getAllAdmin = async (req, res) => {
 };
 
 exports.getAllUser = async (req, res) => {
-  const users = await userCollection.find({}).toArray();
+  const query = req?.headers?.query;
+  let filter;
+  if (query) {
+    filter = { email: query };
+  } else {
+    filter = {};
+  }
+  const users = await userCollection.find(filter).toArray();
+  if (!users) {
+    users = [];
+  }
   res.send(users);
 };
 
