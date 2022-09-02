@@ -75,7 +75,7 @@ const server = app.listen(port, () => {
 const io = require("socket.io")(server, {
   pingTimeOut: 6000,
   cors: {
-    origin: "https://shohoj-pay-app.web.app",
+    origin: "http://localhost:3000",
   },
 });
 
