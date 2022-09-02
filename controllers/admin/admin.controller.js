@@ -52,7 +52,17 @@ exports.getAllAdmin = async (req, res) => {
 };
 
 exports.getAllUser = async (req, res) => {
-  const users = await userCollection.find({}).toArray();
+  const query = req?.headers?.query;
+  let filter;
+  if (query) {
+    filter = { email: query };
+  } else {
+    filter = {};
+  }
+  const users = await userCollection.find(filter).toArray();
+  if (!users) {
+    users = [];
+  }
   res.send(users);
 };
 
@@ -148,16 +158,16 @@ exports.getTransactionReport = async (req, res) => {
 
   const totalTransactionAmount = getSum(transactions);
 
-  const totalAddMoneyFees = sumFee(addMoney);
-  const totalSendMoneyFees = sumFee(sendMoney);
-  const totalReceiveMoneyFees = sumFee(receiveMoney);
-  const totalSaveMoneyFees = sumFee(saveMoney);
-  const totalRequestMoneyFees = sumFee(requestMoney);
-  const totalMerchantPayFees = sumFee(merchantPay);
-  const totalECheckFees = sumFee(eCheck);
-  const totalMtoMFees = sumFee(MtoM);
-  const totalMtoPFees = sumFee(MtoP);
-  const totalTransferSavingsFees = sumFee(transferSavings);
+  const totalAddMoneyFees = sumFee(addMoney).toFixed(2);
+  const totalSendMoneyFees = sumFee(sendMoney).toFixed(2);
+  const totalReceiveMoneyFees = sumFee(receiveMoney).toFixed(2);
+  const totalSaveMoneyFees = sumFee(saveMoney).toFixed(2);
+  const totalRequestMoneyFees = sumFee(requestMoney).toFixed(2);
+  const totalMerchantPayFees = sumFee(merchantPay).toFixed(2);
+  const totalECheckFees = sumFee(eCheck).toFixed(2);
+  const totalMtoMFees = sumFee(MtoM).toFixed(2);
+  const totalMtoPFees = sumFee(MtoP).toFixed(2);
+  const totalTransferSavingsFees = sumFee(transferSavings).toFixed(2);
 
   const totalFees =
     totalAddMoneyFees +
